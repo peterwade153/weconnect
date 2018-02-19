@@ -1,3 +1,4 @@
+/*---styling for the body---*/
 body{
 	background-image: url("bckg1.jpeg");
 	background-repeat: no-repeat;
@@ -19,7 +20,7 @@ body{
 	background: rgba(0,0,0,0.7);
 	border-radius: 4%;
 }
-
+/*-- styling for the image on the login and signup page*/
 .firstcontainer img{
 	width: 8%;
 	height: 13%;
