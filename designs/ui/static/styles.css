@@ -1,6 +1,6 @@
 /*---styling for the body---*/
 body{
-	background-image: url("bckg1.jpeg");
+	background-image: url(bckg1.jpeg);
 	background-repeat: no-repeat;
 	background-size: cover;
 }
