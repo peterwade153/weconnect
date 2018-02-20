@@ -10,4 +10,4 @@ A platform bringing businesses and individuals together
  - view a business by id
  - delete a business by a user that registered it
  - review a business
- - view reviews of a registered business
+ - view reviews for a registered business
