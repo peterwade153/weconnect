@@ -35,3 +35,6 @@ class BusinessTestCase(unittest.TestCase):
 	def test_viewing_registered_business():
 		""" tests viewing business reviews """
 		pass
+
+if __name__ == '__main__':
+	unittest.main()
