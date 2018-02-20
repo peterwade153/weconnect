@@ -12,7 +12,6 @@ class BusinessTestCase(unittest.TestCase):
 
 	def test_business_registered_successfully(self):
 		""" tests a business can be created successfully """
-
 		pass
 
 	def test_registering_already_existing_business(self):
