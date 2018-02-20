@@ -87,7 +87,6 @@ def main():
 	biz.register_business(2,'rocks')
 	biz.register_business(3,'fruits')
 	biz.update_registered_business(2,'ugs')
-	biz.delete_registered_business(2)
 	biz.add_review(3,'lovely')
 	biz.add_review(3,'smart')
 
