@@ -101,6 +101,12 @@ def update_business(business_id):
 	return jsonify({'message': 'please fill in id and new_name'}), 403
 
 
+@app.route('/api/v1/businesses/<business_id>', methods = ['DELETE'])
+def delete_business(business_id):
+	""" route should enable a user delete a registered business """
+
+	user.delete_registered_business(business_id)
+	return jsonify({'message': 'Business deleted successfully'}), 200
 
 
 if __name__ == '__main__':
