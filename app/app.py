@@ -52,6 +52,12 @@ def login():
 	return make_response(jsonify({'message': 'please register to login'})), 403
 
 
+@app.route('/api/v1/auth/logout', methods = ['POST'])
+def logout():
+	""" route for logging out alogged in user """
+
+	session.pop('logged_in', None)
+	return jsonify({'message': 'successfully logged out'})
 
 if __name__ == '__main__':
 	app.run(debug = True)
