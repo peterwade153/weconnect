@@ -20,7 +20,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_user_registration(self):
 		""" tests user is registered """
 
-		user_data = {'username': 'test', 'password': 'test123'}
+		user_data = {'username': 'test1', 'password': 'test123'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertIn('registered successfully', str(result.data))
 		self.assertEqual(result.status_code, 201)
@@ -29,8 +29,9 @@ class BusinessTestCase(unittest.TestCase):
 	def test_user_login(self):
 		""" tests a user can login """
 
-		user_data = {'username': 'test', 'password': 'test123'}
+		user_data = {'username': 'test2', 'password': 'test123'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
+		self.assertEqual(result.status_code, 201)		
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertIn('logged in successfully!', str(result2.data))
 		self.assertEqual(result2.status_code, 200)
