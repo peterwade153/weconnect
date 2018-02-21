@@ -21,6 +21,7 @@ def register():
 	username = data['username']
 	password = data['password']
 
+	''' checking if user is not already registered '''
 	if username not in users.keys():
 		users['username'] = password
 		return make_response(jsonify({'message':'registered successfully'})),201
