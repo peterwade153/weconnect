@@ -47,7 +47,7 @@ def login():
 	''' checking user is already registered '''
 	if username in users.keys() and password in users.values():
 		session['logged_in'] = True
-		return make_response(jsonify({'message': 'logged in successfully!'})),200
+		return make_response(jsonify({'message': 'logged in successfully!'})), 200
 
 	return make_response(jsonify({'message': 'please register to login'})), 403
 
@@ -57,7 +57,23 @@ def logout():
 	""" route for logging out alogged in user """
 
 	session.pop('logged_in', None)
-	return jsonify({'message': 'successfully logged out'})
+	return jsonify({'message': 'successfully logged out'}), 200
+
+
+@app.route('/api/v1/auth/reset-password', methods = ['POST'])
+def reset_password():
+	""" route enables user reset their password """
+
+	data = request.get_json()
+	if data['username'] and data['new_password']:
+		if data['username'] in users.keys():
+			users['username'] = data['new_password']
+			return jsonify({'message': 'password reset successfully!'}), 200
+
+		return jsonify({'message': 'user not registered here!'}), 404
+
+	return jsonify({'message': 'please fill in username and password'}), 403
+
 
 if __name__ == '__main__':
 	app.run(debug = True)
