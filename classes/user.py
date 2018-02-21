@@ -28,13 +28,15 @@ class User():
 
 	def view_a_business(self, id):
 		""" method allows a user to a view a business"""
+		my_list = []
 		if id in self.business.keys():
 			my_business = self.business[id]
+			my_list.append(my_business)
 
 		else:
-			"business not registered!"
+			return "business not registered!"
 
-		return my_business
+		return my_list
 
 
 		  
