@@ -33,23 +33,7 @@ def register():
 	return make_response(jsonify({'message': 'user already registered'})),202
 
 
-@app.route('/api/v1/auth/login', methods = ['POST'])
-def login():
-	""" route enables a user to login """
 
-	data = request.get_json()
-	if not data['username'] and not data['password']:
-		return make_response(jsonify({'message': 'please fill in username and password'}))
-
-	username = data['username']
-	password = data['password']
-
-	''' checking user is already registered '''
-	if username not in users.keys() and password not in users.values():
-		return make_response(jsonify({'message': 'please register to login'}))
-
-	session['logged_in'] = True
-	return make_response(jsonify({'message': 'logged in successfully!'}))
 
 
 if __name__ == '__main__':
