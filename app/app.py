@@ -7,7 +7,11 @@ from classes.user import User
 app = Flask(__name__)
 
 app.secret_key = 'younoscretet'
+
+''' creating an instance of the user '''
 user = User()
+
+''' dictionary to store our users'''
 users = {}
 
 @app.route('/api/v1/auth/register', methods = ['POST'])
