@@ -66,6 +66,7 @@ def reset_password():
 
 	data = request.get_json()
 	if data['username'] and data['new_password']:
+		''' check if user is already registered here'''
 		if data['username'] in users.keys():
 			users['username'] = data['new_password']
 			return jsonify({'message': 'password reset successfully!'}), 200
@@ -73,6 +74,18 @@ def reset_password():
 		return jsonify({'message': 'user not registered here!'}), 404
 
 	return jsonify({'message': 'please fill in username and password'}), 403
+
+
+@app.route('/api/v1/businesses', methods = ['POST'])
+def register_business():
+	""" route enables user registera business"""
+
+	data = request.get_json()
+	if data['id'] and data['business_name']:
+		user.register_business(data['id'], data['business_name'])
+		return jsonify({'message': 'Business registered successfully'}), 201
+
+	return ({'message': 'please fill in business id and business_name'}), 403
 
 
 if __name__ == '__main__':
