@@ -1,4 +1,6 @@
-class User(object):
+""" user class"""
+
+class User():
 	"""docstring for user"""
 	def __init__(self):
 		self.business = {}

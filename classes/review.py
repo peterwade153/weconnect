@@ -1,6 +1,6 @@
 """ reviews class"""
 
-class Review(object):
+class Review():
 	"""docstring for Review"""
 	def __init__(self, reviews):
 		self.reviews = []
