@@ -2,15 +2,16 @@ import sys
 sys.path.append('..')
 import json
 import unittest
-from app import app
+from app.app import app
 
 class BusinessTestCase(unittest.TestCase):
 
 	def setUp(self):
 		""" this is run before every test"""
 
-		app.testing = True
 		self.app = app.test_client()
+		self.app.testing = True
+		
 
 	def tearDown(self):
 		""" this runs after every test"""
@@ -20,7 +21,7 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests user is registered """
 
 		user_data = {'username': 'test', 'password': 'test123'}
-		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data))
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertIn('registered successfully', str(result.data))
 		self.assertEqual(result.status_code, 201)
 
@@ -29,7 +30,8 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests a user can login """
 
 		user_data = {'username': 'test', 'password': 'test123'}
-		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data))
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
+		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertIn('logged in successfully!', str(result2.data))
 		self.assertEqual(result2.status_code, 200)
 
