@@ -44,7 +44,7 @@ def login():
 	username = data['username']
 	password = data['password']
 
-	''' checking user is already registered '''
+	''' checking user is already registered if not they shud register'''
 	if username not in users.keys() and password not in users.values():
 		return make_response(jsonify({'message': 'please register to login'}))
 
