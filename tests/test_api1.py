@@ -47,16 +47,6 @@ class BusinessTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 201)
 
 
-	def test_registering_already_existing_business(self):
-		""" tests a business cant be registered more than once"""
-
-		business_data = {'id': 1, 'business_name': 'demo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data))
-		self.assertEqual(rev.status_code, 201)
-		res = self.post('/api/v1/businesses', data = json.dumps(business_data))
-		self.assertIn('Business registered already', str(res.data))
-
-
 	def test_editing_registered_business(self):
 		""" tests a business can be updated """
 		
@@ -73,9 +63,9 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests a business can be deleted"""
 
 		business_data = {'id': 1, 'business_name': 'demo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data))
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type= 'application/json')
 		self.assertEqual(rev.status_code, 201)
-		del_result = self.app.delete('/api/v1/businesses/1')
+		del_result = self.app.delete('/api/v1/businesses/1', content_type= 'application/json')
 		self.assertEqual(del_result.status_code, 200)
 
 
