@@ -21,7 +21,7 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests user is registered """
 
 		user_data = {'username': 'test1', 'password': 'test123'}
-		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertIn('registered successfully', str(result.data))
 		self.assertEqual(result.status_code, 201)
 
@@ -51,10 +51,10 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests a business can be updated """
 		
 		business_data = {'id': 1, 'business_name': 'demo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type= 'application/json')
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		new_data = {'id': 1, 'new_name': 'roko'}
-		update_res = self.app.put('/api/v1/businesses/1', data = json.dumps(new_data), content_type= 'application/json')
+		update_res = self.app.put('/api/v1/businesses/1', data = json.dumps(new_data), content_type = 'application/json')
 		self.assertIn('Business updated successfully!', str(update_res.data))
 		self.assertEqual(update_res.status_code, 200)
 
@@ -63,7 +63,7 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests a business can be deleted"""
 
 		business_data = {'id': 1, 'business_name': 'demo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type= 'application/json')
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		del_result = self.app.delete('/api/v1/businesses/1', content_type= 'application/json')
 		self.assertEqual(del_result.status_code, 200)
@@ -73,10 +73,10 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests adding a review to a business """
 
 		business_data = {'id': 1, 'business_name': 'demo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data))
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
-		review = {'id': 'Fantastic'}
-		review_res = self.app.post('/api/v1/1/reviews', data = json.dumps(review))
+		review = {'review': 'Fantastic'}
+		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review), content_type = 'application/json')
 		self.assertEqual(review_res.status_code, 201)
 
 
@@ -84,10 +84,10 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests viewing business reviews """
 
 		business_data = {'id': 1, 'business_name': 'demo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data))
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
-		review = {'id': 'Fantastic'}
-		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review))
+		review = {'review': 'Fantastic'}
+		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review), content_type = 'application/json')
 		self.assertEqual(review_res.status_code, 201)
 		get_res = self.app.get('/api/v1/businesses/1/reviews')
 		self.assertEqual(get_res.status_code, 200)
