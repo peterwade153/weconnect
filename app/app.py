@@ -105,7 +105,10 @@ def update_business(business_id):
 def delete_business(business_id):
 	""" route should enable a user delete a registered business """
 
-	user.delete_registered_business(business_id)
+	business = user.delete_registered_business(business_id)
+	if not business:
+		return jsonify({'message': 'business not registered here'}), 404
+
 	return jsonify({'message': 'Business deleted successfully'}), 200
 
 
@@ -118,6 +121,18 @@ def view_businesses():
 		return jsonify({'message': 'no business registered'}), 404
 
 	return jsonify({'businesses': my_list}), 200
+
+
+@app.route('/api/v1/businesses/<business_id>', methods = ['GET'])
+def view_business(business_id):
+	""" route returns a business by id"""
+
+	business = user.view_a_business(business_id)
+	if not business:
+		return jsonify({'message': 'Business not registered here'}), 404
+
+	return jsonify({'Business': business})
+
 
 
 if __name__ == '__main__':
