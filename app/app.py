@@ -20,7 +20,7 @@ def register():
 
 	data = request.get_json()
 	if not data['username'] and not data['password']:
-		return make_response(jsonify({'message': 'please fill in username and password'})), 403
+		return make_response(jsonify({'message': 'please fill in username and password'})), 400
 
 	username = data['username']
 	password = data['password']
@@ -39,7 +39,7 @@ def login():
 
 	data = request.get_json()
 	if not data['username'] and not data['password']:
-		return make_response(jsonify({'message': 'please fill in username and password'})), 403
+		return make_response(jsonify({'message': 'please fill in username and password'})), 400
 
 	username = data['username']
 	password = data['password']
@@ -49,7 +49,7 @@ def login():
 		session['logged_in'] = True
 		return make_response(jsonify({'message': 'logged in successfully!'})), 200
 
-	return make_response(jsonify({'message': 'please register to login'})), 403
+	return make_response(jsonify({'message': 'please register to login'})), 401
 
 
 @app.route('/api/v1/auth/logout', methods = ['POST'])

@@ -25,6 +25,24 @@ class BusinessTestCase(unittest.TestCase):
 		self.assertIn('registered successfully', str(result.data))
 		self.assertEqual(result.status_code, 201)
 
+	def test_user_cant_register_minus_all_data(self):
+		""" tests a user has to provide all required fields"""
+
+		user_data = {'username': '', 'password': ''}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		self.assertEqual(result.status_code, 400)
+
+
+
+	def test_user_cant_twice(self):
+		""" test user cant register twice"""
+
+		user_data = {'username': 'test', 'password': 'test123'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		self.assertIn('registered successfully', str(result.data))
+		res = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		self.assertEqual(res.status_code, 202)
+
 
 	def test_user_login(self):
 		""" tests a user can login """
@@ -35,6 +53,45 @@ class BusinessTestCase(unittest.TestCase):
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertIn('logged in successfully!', str(result2.data))
 		self.assertEqual(result2.status_code, 200)
+
+
+	def test_non_registered_user_attempt_to_login(self):
+		""" test a user non registered user cant login """
+
+		user_data = {'username': 'test2', 'password': 'test123'}
+		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
+		self.assertEqual(result2.status_code, 401)
+
+
+
+	def test_user_login_without_providing_data(self):
+		""" test user cant login without providing credentials"""
+
+		user_data = {'username': '', 'password': ''}
+		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
+		self.assertEqual(result2.status_code, 400)
+
+
+	def test_user_can_reset_password(self):
+		""" tests aregistered user can reset their password """
+
+		user_data = {'username': 'test12', 'password': 'test1234'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		self.assertEqual(result.status_code, 201)
+		new_data = {'username': 'test12', 'new_password': 'test12345'}
+		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
+		self.assertEqual(res.status_code, 200)
+
+
+	def test_only_registered_user_can_reset_password(self):
+		""" only registered users should change passwords"""
+
+		user_data = {'username': 'test112', 'password': 'test1233'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		self.assertEqual(result.status_code, 201)
+		new_data = {'username': 'test12', 'new_password': 'test12345'}
+		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
+		self.assertEqual(res.status_code, 404)
 
 
 
