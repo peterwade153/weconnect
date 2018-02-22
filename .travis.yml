@@ -1,13 +1,12 @@
 langauge: python
 
 python:
-- "3.6"
+  - "3.4"
 
 cache: pip
 
 
 before_script:
-  - easy_install distribute
   - pip install -r requirements.txt
 
 script: python tests/test_api1.py
