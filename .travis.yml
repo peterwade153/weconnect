@@ -3,7 +3,6 @@ langauge: python
 python:
   - "3.5"
 
-cache: pip
 
 #install dependencies
 install:
