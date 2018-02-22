@@ -160,7 +160,7 @@ def view_business_reviews(business_id):
 	if business:
 		return jsonify({'reviews': business }), 200
 
-	return jsonify({'messages': 'no reviews registered yet'})
+	return jsonify({'messages': 'no reviews registered yet'}), 404
 
 
 
