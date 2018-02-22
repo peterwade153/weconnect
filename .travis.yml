@@ -5,6 +5,9 @@ python:
 
 cache: pip
 
+before_install:
+  - sudo apt-get install python3=3.4.3*
+
 install:
   - pip install -r requirements.txt
 
