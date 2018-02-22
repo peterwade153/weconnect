@@ -1,15 +1,14 @@
-langauge:
-  - python
+langauge: python
 
 python:
-  - "3.4"
+ - "3.4"
+ 
+cache: pip3
 
 
 #install dependencies
-install:
-  - pip3 install -r requirements.txt
+install: pip3 install -r requirements.txt
 
-script:
-  - python tests/test_api1.py
+script: python tests/test_api1.py
  
 
