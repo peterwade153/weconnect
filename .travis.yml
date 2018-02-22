@@ -1,20 +1,14 @@
 langauge: python
 
-
-rvm: None
 python:
-  - "3.4"
-  - "2.7"
   - "3.5"
 
 cache: pip
 
 install:
-  - pip install pytest-cov
   - pip install -r requirements.txt
 
 script:
-  - pytest --cov tests/test_api1.py
   - python tests/test_api1.py
  
 
