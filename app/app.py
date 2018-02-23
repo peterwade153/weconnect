@@ -21,7 +21,6 @@ def register():
 	data = request.get_json()
 	if not data['username'] and not data['password']:
 		return make_response(jsonify({'message': 'please fill in username and password'})), 400
-
 	username = data['username']
 	password = data['password']
 
@@ -29,7 +28,6 @@ def register():
 	if username not in users.keys():
 		users[username] = password
 		return make_response(jsonify({'message': 'registered successfully'})), 201
-
 	return make_response(jsonify({'message': 'user already registered'})), 202
 
 
