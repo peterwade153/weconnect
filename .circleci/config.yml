@@ -8,4 +8,4 @@ dependencies:
 
 test:
   override:
-    - nosetest tests/test_api1.py
+    - python tests/test_api1.py
