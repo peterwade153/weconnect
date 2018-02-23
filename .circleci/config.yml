@@ -5,7 +5,9 @@ jobs:
     docker:
       - image: circleci/python:3.6.2
 
-    working_directory: ~/weconnect/app/classes
+    working_directory:
+      ~/weconnect/app/
+      ~/weconnect/app/classes
 
     steps:
       - checkout
