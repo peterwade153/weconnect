@@ -12,3 +12,14 @@ A platform bringing businesses and individuals together
  - delete a business by a user that registered it
  - review a business
  - view reviews for a registered business
+## Create a virtual enviromenet and activate it
+$ python3 -m venv weconnect
+to activate
+$ source bin/activate
+## Install requirements
+$ pip install -r requirements.txt
+
+## To run application
+$ python app.py
+## Usage
+use postman and the url http://localhost:5000
