@@ -1,12 +1,12 @@
 langauge: python
 
 python:
-  - "3.6"
+  - "3.4"
 
 cache: pip
 
 before_install:
-  - sudo apt-get install python3=3.6*
+  - sudo apt-get install python3
 
 install:
   - pip install -r requirements.txt
