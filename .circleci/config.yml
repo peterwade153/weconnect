@@ -6,14 +6,14 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Install python deps in a venv
-        command:
-          |
-          python3 -m venv venv
-          .venv/bin/activate
-          pip install -r requirements.txt
+          name: Install python deps in a venv
+            command:
+              |
+              python3 -m venv venv
+              .venv/bin/activate
+              pip install -r requirements.txt
       - run:
-        command:
-          |
-          .venv/bin/activate
-          python tests/test_api1.py
+          command:
+            |  
+            .venv/bin/activate
+            python tests/test_api1.py
