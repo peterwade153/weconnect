@@ -20,12 +20,13 @@ class BusinessTestCase(unittest.TestCase):
 	def test_user_registration(self):
 		""" tests user is registered """
 
-		user_data = {'username': 'test1', 'password': 'test123'}
+		user_data = {'username': 'test1', 'password': 'test1273'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
-		self.assertIn('registered successfully', str(result.data))
 		self.assertEqual(result.status_code, 201)
+		self.assertIn('registered successfully', str(result.data))
+		
 
-	def test_user_cant_register_minus_all_data(self):
+	def test_user_only_registers_with_requires_data(self):
 		""" tests a user has to provide all required fields"""
 
 		user_data = {'username': '', 'password': ''}
@@ -34,10 +35,10 @@ class BusinessTestCase(unittest.TestCase):
 
 
 
-	def test_user_cant_twice(self):
+	def test_user_only_registers_once(self):
 		""" test user cant register twice"""
 
-		user_data = {'username': 'test', 'password': 'test123'}
+		user_data = {'username': 'test', 'password': 'test1023'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertIn('registered successfully', str(result.data))
 		res = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
@@ -45,9 +46,9 @@ class BusinessTestCase(unittest.TestCase):
 
 
 	def test_user_login(self):
-		""" tests a user can login """
+		""" tests a user login """
 
-		user_data = {'username': 'test2', 'password': 'test123'}
+		user_data = {'username': 'test2', 'password': 'test1236'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertEqual(result.status_code, 201)		
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
@@ -56,9 +57,9 @@ class BusinessTestCase(unittest.TestCase):
 
 
 	def test_non_registered_user_attempt_to_login(self):
-		""" test a user non registered user cant login """
+		""" test a  non user registered user cant login """
 
-		user_data = {'username': 'test2', 'password': 'test123'}
+		user_data = {'username': 'test32', 'password': 'test1234'}
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertEqual(result2.status_code, 401)
 
@@ -75,10 +76,10 @@ class BusinessTestCase(unittest.TestCase):
 	def test_user_can_reset_password(self):
 		""" tests aregistered user can reset their password """
 
-		user_data = {'username': 'test12', 'password': 'test1234'}
+		user_data = {'username': 'test12', 'password': 'test12345'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(result.status_code, 201)
-		new_data = {'username': 'test12', 'new_password': 'test12345'}
+		new_data = {'username': 'test12', 'new_password': 'test123456'}
 		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
 		self.assertEqual(res.status_code, 200)
 
