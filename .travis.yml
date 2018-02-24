@@ -1,15 +1,18 @@
-langauge: python
+
+language: python
 
 python:
-  - "3.6"
-
-cache: pip
-
+  - "3.4"
 
 install:
+  - pip install coverage
+  - pip install coveralls   #install python-coveralls
+  - pip install pytest-cov
   - pip install -r requirements.txt
 
 script:
-  - python tests/test_api1.py
- 
+  - pytest --cov tests/
 
+after_success:
+  - coverage report
+  - coveralls    #uploads reports to  coveralls.io
