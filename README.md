@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/peterwade153/weconnect.svg?branch=challenge2)](https://travis-ci.org/peterwade153/weconnect)
+[![Coverage Status](https://coveralls.io/repos/github/peterwade153/weconnect/badge.svg?branch=challenge2)](https://coveralls.io/github/peterwade153/weconnect?branch=challenge2)
 # weconnect
 A platform bringing businesses and individuals together
 
