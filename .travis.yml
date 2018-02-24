@@ -7,10 +7,11 @@ python:
 install:
   - pip install coverage
   - pip install coveralls
+  - pip install pytest-cov
   - pip install -r requirements.txt
 
 script:
-  - nosetests --with-coverage tests/test_api1.py
+  - pytest --cov tests/
 
 after_success:
   - coverage report
