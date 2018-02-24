@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/peterwade153/weconnect.svg?branch=master)](https://travis-ci.org/peterwade153/weconnect)
+[![Build Status](https://travis-ci.org/peterwade153/weconnect.svg?branch=challenge2)](https://travis-ci.org/peterwade153/weconnect)
 # weconnect
 A platform bringing businesses and individuals together
 
