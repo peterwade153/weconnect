@@ -31,7 +31,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': '', 'password': ''}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
-		self.assertEqual(result.status_code, 400)
+		self.assertEqual(result.status_code, 403)
 
 
 
@@ -70,7 +70,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': '', 'password': ''}
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
-		self.assertEqual(result2.status_code, 400)
+		self.assertEqual(result2.status_code, 403)
 
 
 	def test_user_can_reset_password(self):
