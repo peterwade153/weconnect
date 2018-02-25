@@ -14,13 +14,21 @@ user = User()
 ''' dictionary to store our users'''
 users = {}
 
+
+@app.route('/')
+def display_documentation():
+	""" route displays api documentation """
+
+	return render_template('index.html')
+
+
 @app.route('/api/v1/auth/register', methods = ['POST'])
 def register():
 	""" route enables a user to register """
 
 	data = request.get_json()
 	if not data['username'] and not data['password']:
-		return make_response(jsonify({'message': 'please fill in username and password'})), 400
+		return make_response(jsonify({'message': 'please fill in username and password'})), 403
 	username = data['username']
 	password = data['password']
 
@@ -37,7 +45,7 @@ def login():
 
 	data = request.get_json()
 	if not data['username'] and not data['password']:
-		return make_response(jsonify({'message': 'please fill in username and password'})), 400
+		return make_response(jsonify({'message': 'please fill in username and password'})), 403
 
 	username = data['username']
 	password = data['password']
@@ -84,7 +92,7 @@ def register_business():
 		if business:
 			return jsonify({'message': 'Business registered successfully'}), 201
 
-		return jsonify({'message': 'business registered already'})
+		return jsonify({'message': 'business registered already'}), 202
 
 	return jsonify({'message': 'please fill in business id and business_name'}), 403
 
@@ -96,10 +104,11 @@ def update_business(business_id):
 
 	data = request.get_json()
 	if data['new_name']:
-		user.update_registered_business(business_id, data['new_name'])
-		return jsonify({'message': 'Business updated successfully!'}), 200
+		if user.update_registered_business(business_id, data['new_name']):
+			return jsonify({'message': 'Business updated successfully!'}), 200
+		return jsonify({'message': 'Business not registered here!'}), 404
 
-	return jsonify({'message': 'please fill in id and new_name'}), 403
+	return jsonify({'message': 'please fill new_name'}), 403
 
 
 @app.route('/api/v1/businesses/<business_id>', methods = ['DELETE'])
