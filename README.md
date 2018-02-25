@@ -23,4 +23,10 @@ $ pip install -r requirements.txt
 ## To run application
 $ python app.py
 ## Usage
-use postman and the url http://localhost:5000
+To test the api using postman(chrome extension) with the url below
+
+$ https://weconnect-my.herokuapp.com/
+
+To view the api documentation use the link below
+
+$ https://peterweconnect.docs.apiary.io/
