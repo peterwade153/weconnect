@@ -1,7 +1,7 @@
 import sys
 sys.path.append('..')
 import json
-from flask import Flask, request, session, jsonify, make_response
+from flask import Flask, request, session, jsonify, make_response, render_template
 from classes.user import User
 
 app = Flask(__name__)
