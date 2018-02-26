@@ -36,7 +36,7 @@ def register():
 	if username not in users.keys():
 		users[username] = password
 		return make_response(jsonify({'message': 'registered successfully'})), 201
-	return make_response(jsonify({'message': 'user already registered'})), 202
+	return make_response(jsonify({'message': 'user already exists, please choose another username'})), 202
 
 
 @app.route('/api/v1/auth/login', methods = ['POST'])
@@ -55,7 +55,7 @@ def login():
 		session['logged_in'] = True
 		return make_response(jsonify({'message': 'logged in successfully!'})), 200
 
-	return make_response(jsonify({'message': 'please register to login'})), 401
+	return make_response(jsonify({'message': 'username and password dont match'})), 404
 
 
 @app.route('/api/v1/auth/logout', methods = ['POST'])
@@ -82,94 +82,95 @@ def reset_password():
 	return jsonify({'message': 'please fill in username and password'}), 403
 
 
-@app.route('/api/v1/businesses', methods = ['POST'])
-def register_business():
-	""" route enables user registera business"""
+@app.route('/api/v1/businesses', methods = ['POST', 'GET'])
+def business():
+	""" route enables user register a business and view businesses"""
 
-	data = request.get_json()
-	if data['id'] and data['business_name']:
-		business = user.register_business(data['id'], data['business_name'])
+	if request.method == 'POST':
+		""" registering new business"""
+
+		data = request.get_json()
+		if data['id'] and data['business_name']:
+			business = user.register_business(data['id'], data['business_name'])
+			if business:
+				return jsonify({'message': 'Business registered successfully'}), 201
+
+			return jsonify({'message': 'business registered already'}), 202
+
+		return jsonify({'message': 'please fill in business id and business_name'}), 400
+
+	else:
+		# GET
+		""" return registered businesses """
+
+		my_list = user.view_registered_businesses()
+		if not my_list:
+			return jsonify({'message': 'no business registered'}), 404
+
+		return jsonify({'businesses': my_list}), 200
+
+
+
+
+
+@app.route('/api/v1/businesses/<business_id>', methods = ['PUT', 'GET', 'DELETE'])
+def update_get_delete_business(business_id):
+	""" route allows a user update Delete and get a registered business """
+
+	if request.method == 'PUT':
+		""" Update  a registered business """
+
+		data = request.get_json()
+		if data['new_name']:
+			if user.update_registered_business(business_id, data['new_name']):
+				return jsonify({'message': 'Business updated successfully!'}), 200
+
+			return jsonify({'message': 'Business not registered here!'}), 404
+
+		return jsonify({'message': 'please fill new_name'}), 400
+
+	elif request.method == 'DELETE':
+		""" deletes a registered business """
+
+		business = user.delete_registered_business(business_id)
+		if not business:
+			return jsonify({'message': 'business not registered here'}), 404
+
+		return jsonify({'message': 'Business deleted successfully'}), 200
+
+	else:
+		""" enable user view a registered business """
+
+		business = user.view_a_business(business_id)
+		if not business:
+			return jsonify({'message': 'Business not registered here'}), 404
+
+		return jsonify({'Business': business}),200
+
+
+
+@app.route('/api/v1/businesses/<business_id>/reviews', methods = ['POST', 'GET'])
+def review_and_view_business_reviews(business_id):
+	""" route allows user to review and view its reviews business """
+
+	if request.method == 'POST':
+		""" method to add review"""
+		data = request.get_json()
+		if data['review']:
+			my_review = user.add_review(business_id, data['review'])
+			if my_review:
+				return jsonify({'message': 'Review added successfully!'}), 201
+
+			return jsonify({'message':'business not registered here'}), 404
+
+		return jsonify({'message': 'please enter review'}), 403
+
+	else:
+		business = user.view_business_reviews(business_id)
 		if business:
-			return jsonify({'message': 'Business registered successfully'}), 201
+			return jsonify({'reviews': business}), 200
 
-		return jsonify({'message': 'business registered already'}), 202
-
-	return jsonify({'message': 'please fill in business id and business_name'}), 403
-
-
-
-@app.route('/api/v1/businesses/<business_id>', methods = ['PUT'])
-def update_business(business_id):
-	""" route allows a user update a business """
-
-	data = request.get_json()
-	if data['new_name']:
-		if user.update_registered_business(business_id, data['new_name']):
-			return jsonify({'message': 'Business updated successfully!'}), 200
-		return jsonify({'message': 'Business not registered here!'}), 404
-
-	return jsonify({'message': 'please fill new_name'}), 403
-
-
-@app.route('/api/v1/businesses/<business_id>', methods = ['DELETE'])
-def delete_business(business_id):
-	""" route should enable a user delete a registered business """
-
-	business = user.delete_registered_business(business_id)
-	if not business:
-		return jsonify({'message': 'business not registered here'}), 404
-
-	return jsonify({'message': 'Business deleted successfully'}), 200
-
-
-@app.route('/api/v1/businesses', methods = ['GET'])
-def view_businesses():
-	""" route returns all businesses """
-
-	my_list = user.view_registered_businesses()
-	if not my_list:
-		return jsonify({'message': 'no business registered'}), 404
-
-	return jsonify({'businesses': my_list}), 200
-
-
-@app.route('/api/v1/businesses/<business_id>', methods = ['GET'])
-def view_business(business_id):
-	""" route returns a business by id"""
-
-	business = user.view_a_business(business_id)
-	if not business:
-		return jsonify({'message': 'Business not registered here'}), 404
-
-	return jsonify({'Business': business})
-
-
-@app.route('/api/v1/businesses/<business_id>/reviews', methods = ['POST'])
-def review_business(business_id):
-	""" route allows user to review a business """
-
-	data = request.get_json()
-	if data['review']:
-		my_review = user.add_review(business_id, data['review'])
-		if my_review:
-			return jsonify({'message': 'Review added successfully!'}), 201
-
-		return jsonify({'message':'business not registered here'}), 404
-
-	return jsonify({'message': 'please enter review'}), 403
-
-
-@app.route('/api/v1/businesses/<business_id>/reviews', methods = ['GET'])
-def view_business_reviews(business_id):
-	""" route enables user see business reviews """
-
-	business = user.view_business_reviews(business_id)
-	if business:
-		return jsonify({'reviews': business }), 200
-
-	return jsonify({'messages': 'no reviews registered yet'}), 404
-
-
+		return jsonify({'message':'no reviews registered yet'}), 404
 
 
 if __name__ == '__main__':
