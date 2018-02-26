@@ -6,6 +6,8 @@ A platform bringing businesses and individuals together
 ## Functions
  - User signup
  - user login
+ - user logout
+ - user reset-password
  - register a business
  - update a business by user who registered it
  - view registered businesses
