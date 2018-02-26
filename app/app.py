@@ -88,7 +88,7 @@ def business():
 
 	if request.method == 'POST':
 		""" registering new business"""
-
+		
 		data = request.get_json()
 		if data['id'] and data['business_name']:
 			business = user.register_business(data['id'], data['business_name'])
