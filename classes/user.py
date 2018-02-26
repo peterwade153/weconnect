@@ -9,22 +9,16 @@ class User():
 	def register_business(self, id, business_name):
 		""" method allows a user to register a business"""
 
-		#checking if user is not registered already
+		#checking if business is not registered already
 		if id not in self.business.keys() and business_name not in self.business.values():
 			self.business[id] = business_name
-		else:
-			return "business already registered"
-		return self.business
+			return self.business
+		return
 
 	def view_registered_businesses(self):
 		""" method allows a user to view all registered businesses"""
 
-		my_list = []
-
-		for business in self.business.values():
-			my_list.append(business)
-
-		return my_list
+		return self.business
 
 	def view_a_business(self, id):
 		""" method allows a user to a view a business"""
@@ -45,10 +39,8 @@ class User():
 
 		if id in self.business.keys():
 			self.business[id] = new_name
-
 		else:
 			return "business doesnot exist!"
-
 		return self.business
 
 	def delete_registered_business(self, id):
@@ -67,12 +59,10 @@ class User():
 		if id in self.business.keys():
 			if id in self.business_reviews.keys():
 				(self.business_reviews[id]).append(review)
-
 			else:
 				reviews = []
 				reviews.append(review)
 				self.business_reviews[id] = reviews
-
 		else:
 			return "business doesnt exist!"
 
