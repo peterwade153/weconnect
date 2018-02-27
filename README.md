@@ -1,11 +1,15 @@
 [![Build Status](https://travis-ci.org/peterwade153/weconnect.svg?branch=challenge2)](https://travis-ci.org/peterwade153/weconnect)
 [![Coverage Status](https://coveralls.io/repos/github/peterwade153/weconnect/badge.svg?branch=master)](https://coveralls.io/github/peterwade153/weconnect?branch=master)
 # weconnect
-A platform bringing businesses and individuals together
+WeConnect provides a platform that brings businesses and individuals together. This platform 
+creates awareness for businesses and gives the users the ability to write reviews about the 
+businesses they have interacted with. 
 
 ## Functions
  - User signup
  - user login
+ - user logout
+ - user reset-password
  - register a business
  - update a business by user who registered it
  - view registered businesses
