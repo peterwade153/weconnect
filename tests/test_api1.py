@@ -31,7 +31,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': '', 'password': ''}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
-		self.assertEqual(result.status_code, 400)
+		self.assertEqual(result.status_code, 403)
 
 
 
@@ -61,7 +61,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': 'test32', 'password': 'test1234'}
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
-		self.assertEqual(result2.status_code, 401)
+		self.assertEqual(result2.status_code, 404)
 
 
 
@@ -70,7 +70,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': '', 'password': ''}
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
-		self.assertEqual(result2.status_code, 400)
+		self.assertEqual(result2.status_code, 403)
 
 
 	def test_user_can_reset_password(self):
@@ -79,7 +79,7 @@ class BusinessTestCase(unittest.TestCase):
 		user_data = {'username': 'test12', 'password': 'test12345'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(result.status_code, 201)
-		new_data = {'username': 'test12', 'new_password': 'test123456'}
+		new_data = {'username': 'test12', 'password': 'test12345', 'new_password': 'test123456'}
 		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
 		self.assertEqual(res.status_code, 200)
 
@@ -90,7 +90,7 @@ class BusinessTestCase(unittest.TestCase):
 		user_data = {'username': 'test112', 'password': 'test1233'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(result.status_code, 201)
-		new_data = {'username': 'test12', 'new_password': 'test12345'}
+		new_data = {'username': 'test12','password':'test1233', 'new_password': 'test12345'}
 		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
 		self.assertEqual(res.status_code, 404)
 
@@ -99,7 +99,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_business_registered_successfully(self):
 		""" tests a business can be created successfully """
 
-		business_data = {'id': 1, 'business_name': 'demo'}
+		business_data = {'business_name': 'demo'}
 		res = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type= 'application/json')
 		self.assertIn('Business registered successfully', str(res.data))
 		self.assertEqual(res.status_code, 201)
@@ -108,7 +108,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_editing_registered_business(self):
 		""" tests a business can be updated """
 		
-		business_data = {'id': 1, 'business_name': 'demo'}
+		business_data = {'business_name': 'realdemo'}
 		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		new_data = {'id': 1, 'new_name': 'roko'}
@@ -120,7 +120,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_deleting_registered_business(self):
 		""" tests a business can be deleted"""
 
-		business_data = {'id': 1, 'business_name': 'demo'}
+		business_data = {'business_name': 'real_demo'}
 		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		del_result = self.app.delete('/api/v1/businesses/1', content_type= 'application/json')
@@ -130,7 +130,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_adding_review(self):
 		""" tests adding a review to a business """
 
-		business_data = {'id': 1, 'business_name': 'demo'}
+		business_data = {'business_name': 'ourdemo'}
 		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		review = {'review': 'Fantastic'}
@@ -141,7 +141,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_viewing_registered_business(self):
 		""" tests viewing business reviews """
 
-		business_data = {'id': 1, 'business_name': 'demo'}
+		business_data = {'business_name': 'mydemo'}
 		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		review = {'review': 'Fantastic'}
