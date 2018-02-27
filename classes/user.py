@@ -3,34 +3,30 @@
 class User():
 	"""docstring for user"""
 	def __init__(self):
-		self.business = {}
+		self.id = 0
+		self.businesses = {}
 		self.business_reviews = {}
 
-	def register_business(self, id, business_name):
+	def register_business(self, business_name):
 		""" method allows a user to register a business"""
 
-		#checking if user is not registered already
-		if id not in self.business.keys() and business_name not in self.business.values():
-			self.business[id] = business_name
-		else:
-			return "business already registered"
-		return self.business
+		self.id = (len(self.businesses.keys())) + 1
+		#stripping any leading or tailing spaces
+		business_name.strip()
+		self.businesses[self.id] = business_name
+		return self.businesses
+
 
 	def view_registered_businesses(self):
 		""" method allows a user to view all registered businesses"""
 
-		my_list = []
-
-		for business in self.business.values():
-			my_list.append(business)
-
-		return my_list
+		return self.businesses
 
 	def view_a_business(self, id):
 		""" method allows a user to a view a business"""
 		my_list = []
-		if id in self.business.keys():
-			my_business = self.business[id]
+		if id in self.businesses.keys():
+			my_business = self.businesses[id]
 			my_list.append(my_business)
 
 		else:
@@ -43,36 +39,34 @@ class User():
 	def update_registered_business(self, id, new_name):
 		""" method allows a user update a registered business"""
 
-		if id in self.business.keys():
-			self.business[id] = new_name
-
+		if id in self.businesses.keys():
+			new_name.strip()  #stripping any leading or tailing spaces
+			self.businesses[id] = new_name
 		else:
 			return "business doesnot exist!"
-
-		return self.business
+		return self.businesses
 
 	def delete_registered_business(self, id):
 		""" method allows a user delete a business they registered"""
 
-		if id in self.business.keys():
-			del self.business[id]
+		if id in self.businesses.keys():
+			del self.businesses[id]
 		else:
 			return "business doesnot exist"
 
-		return self.business
+		return self.businesses
 
 	def add_review(self, id, review):
 		""" method allows a user add a review to a registered business"""
 
-		if id in self.business.keys():
+		if id in self.businesses.keys():
 			if id in self.business_reviews.keys():
 				(self.business_reviews[id]).append(review)
-
 			else:
 				reviews = []
+				review.strip()  #stripping any whitespaces user may pass in accidentally
 				reviews.append(review)
 				self.business_reviews[id] = reviews
-
 		else:
 			return "business doesnt exist!"
 
@@ -81,12 +75,11 @@ class User():
 	def view_business_reviews(self, id):
 		""" shows reviews of a business"""
 
-		my_list = []
-		if id in self.business.keys():
+		my_reviews = []
+		if id in self.businesses.keys():
 			if id in self.business_reviews.keys():
 				for review in self.business_reviews[id]:
-					my_list.append(review)
-
+					my_reviews.append(review)
 
 			else:
 				return "business currently has no reviews"
@@ -94,17 +87,16 @@ class User():
 		else:
 			return "business doest exist!"
 
-		return my_list
-
+		return my_reviews
 
 
 	def view_reviews(self):
 		""" method allows a user to view business reviews"""
 
-		my_list = []
+		all_reviews = []
 		for review in self.business_reviews.values():
-			my_list.append(review)
-		return my_list
+			all_reviews.append(review)
+		return all_reviews
 
 
 
