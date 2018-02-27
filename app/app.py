@@ -105,7 +105,7 @@ def business():
 		data = request.get_json()
 		if data['business_name']:
 			business = user.register_business(data['business_name'])
-			return jsonify({'message': 'Business registered successfully'}), 201
+			return jsonify({'Business registered': business }), 201
 
 		return jsonify({'message': 'please fill in business_name'}), 400
 
