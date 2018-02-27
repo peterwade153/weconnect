@@ -88,7 +88,7 @@ def business():
 
 	if request.method == 'POST':
 		""" registering new business"""
-		
+
 		data = request.get_json()
 		if data['id'] and data['business_name']:
 			business = user.register_business(data['id'], data['business_name'])
@@ -108,9 +108,6 @@ def business():
 			return jsonify({'message': 'no business registered'}), 404
 
 		return jsonify({'businesses': my_list}), 200
-
-
-
 
 
 @app.route('/api/v1/businesses/<business_id>', methods = ['PUT', 'GET', 'DELETE'])
