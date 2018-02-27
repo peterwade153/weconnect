@@ -90,24 +90,24 @@ def business():
 		""" registering new business"""
 
 		data = request.get_json()
-		if data['id'] and data['business_name']:
-			business = user.register_business(data['id'], data['business_name'])
+		if data['business_name']:
+			business = user.register_business(data['business_name'])
 			if business:
 				return jsonify({'message': 'Business registered successfully'}), 201
 
 			return jsonify({'message': 'business registered already'}), 202
 
-		return jsonify({'message': 'please fill in business id and business_name'}), 400
+		return jsonify({'message': 'please fill in business_name'}), 400
 
 	else:
 		# GET
 		""" return registered businesses """
 
-		my_list = user.view_registered_businesses()
-		if not my_list:
+		my_businesses = user.view_registered_businesses()
+		if not my_businesses:
 			return jsonify({'message': 'no business registered'}), 404
 
-		return jsonify({'businesses': my_list}), 200
+		return jsonify({'businesses': my_businesses}), 200
 
 
 @app.route('/api/v1/businesses/<business_id>', methods = ['PUT', 'GET', 'DELETE'])
