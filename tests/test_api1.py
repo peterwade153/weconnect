@@ -79,7 +79,7 @@ class BusinessTestCase(unittest.TestCase):
 		user_data = {'username': 'test12', 'password': 'test12345'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(result.status_code, 201)
-		new_data = {'username': 'test12', 'new_password': 'test123456'}
+		new_data = {'username': 'test12', 'password': 'test12345', 'new_password': 'test123456'}
 		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
 		self.assertEqual(res.status_code, 200)
 
@@ -90,7 +90,7 @@ class BusinessTestCase(unittest.TestCase):
 		user_data = {'username': 'test112', 'password': 'test1233'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(result.status_code, 201)
-		new_data = {'username': 'test12', 'new_password': 'test12345'}
+		new_data = {'username': 'test122', 'password': 'test1233', 'new_password': 'test12345'}
 		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
 		self.assertEqual(res.status_code, 404)
 

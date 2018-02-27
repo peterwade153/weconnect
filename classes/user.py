@@ -11,6 +11,8 @@ class User():
 		""" method allows a user to register a business"""
 
 		self.id = (len(self.businesses.keys())) + 1
+		#stripping any leading or tailing spaces
+		business_name.strip()
 		self.businesses[self.id] = business_name
 		return self.businesses
 
@@ -32,12 +34,12 @@ class User():
 
 		return my_list
 
-
 		  
 	def update_registered_business(self, id, new_name):
 		""" method allows a user update a registered business"""
 
 		if id in self.businesses.keys():
+			new_name.strip()  #stripping any leading or tailing spaces
 			self.businesses[id] = new_name
 		else:
 			return "business doesnot exist!"
@@ -61,6 +63,7 @@ class User():
 				(self.business_reviews[id]).append(review)
 			else:
 				reviews = []
+				review.strip()  #stripping any whitespaces user may pass in accidentally
 				reviews.append(review)
 				self.business_reviews[id] = reviews
 		else:

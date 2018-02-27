@@ -29,8 +29,11 @@ def register():
 	data = request.get_json()
 	if not data['username'] and not data['password']:
 		return make_response(jsonify({'message': 'please fill in username and password'})), 403
+	#stripping off any leading and tailing whitespaces both password and username
 	username = data['username']
+	username.strip()  
 	password = data['password']
+	password.strip()   
 
 	''' checking if user is not already registered '''
 	if username not in users.keys():
@@ -48,7 +51,9 @@ def login():
 		return make_response(jsonify({'message': 'please fill in username and password'})), 403
 
 	username = data['username']
+	username.strip()
 	password = data['password']
+	password.strip()
 
 	''' checking user is already registered '''
 	if username in users.keys() and password in users.values():
@@ -71,15 +76,22 @@ def reset_password():
 	""" route enables user reset their password """
 
 	data = request.get_json()
-	if data['username'] and data['new_password']:
-		''' check if user is already registered here'''
-		if data['username'] in users.keys():
-			users['username'] = data['new_password']
-			return jsonify({'message': 'password reset successfully!'}), 200
+	
+	''' check if user is already registered here'''
+	username = data['username']
+	username.strip()
+	password = data['password']
+	password.strip()
+	new_password = data['new_password']
+	new_password.strip()
 
-		return jsonify({'message': 'user not registered here!'}), 404
+	if ( username, password ) in users.items():
+		users['username'] = new_password
+		return jsonify({'message': 'password reset successfully!'}), 200
 
-	return jsonify({'message': 'please fill in username and password'}), 403
+	return jsonify({'message': 'user not registered here!'}), 404
+
+	#return jsonify({'message': 'please fill in username and password'}), 403
 
 
 @app.route('/api/v1/businesses', methods = ['POST', 'GET'])
