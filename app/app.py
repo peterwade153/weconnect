@@ -84,7 +84,8 @@ def reset_password():
 	password.strip()
 	new_password = data['new_password']
 	new_password.strip()
-
+    
+    #check if passed username and password match
 	if ( username, password ) in users.items():
 		users['username'] = new_password
 		return jsonify({'message': 'password reset successfully!'}), 200
