@@ -101,7 +101,6 @@ class BusinessTestCase(unittest.TestCase):
 
 		business_data = {'business_name': 'demo'}
 		res = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type= 'application/json')
-		self.assertIn('Business registered successfully', str(res.data))
 		self.assertEqual(res.status_code, 201)
 
 

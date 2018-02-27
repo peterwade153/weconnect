@@ -14,7 +14,8 @@ class User():
 		#stripping any leading or tailing spaces
 		business_name.strip()
 		self.businesses[self.id] = business_name
-		return self.businesses
+		business = {"id": self.id, "name": business_name}
+		return business
 
 
 	def view_registered_businesses(self):
@@ -33,6 +34,7 @@ class User():
 			return "business not registered!"
 
 		return my_list
+
 
 		  
 	def update_registered_business(self, id, new_name):
