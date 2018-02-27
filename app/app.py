@@ -85,7 +85,7 @@ def reset_password():
 	new_password = data['new_password']
 	new_password.strip()
     
-    #check if passed username and password match
+    #check if passed username and password mat
 	if ( username, password ) in users.items():
 		users['username'] = new_password
 		return jsonify({'message': 'password reset successfully!'}), 200
@@ -105,7 +105,7 @@ def business():
 		data = request.get_json()
 		if data['business_name']:
 			business = user.register_business(data['business_name'])
-			return jsonify({'message': 'Business registered successfully'}), 201
+			return jsonify({'Business registered successfully': business }), 201
 
 		return jsonify({'message': 'please fill in business_name'}), 400
 
