@@ -3,18 +3,18 @@
 class User():
 	"""docstring for user"""
 	def __init__(self):
-		self.id = 0
+		
 		self.businesses = {}
 		self.business_reviews = {}
 
 	def register_business(self, business_name):
 		""" method allows a user to register a business"""
 
-		self.id = (len(self.businesses.keys())) + 1
+		id = (len(self.businesses.keys())) + 1
 		#stripping any leading or tailing spaces
 		business_name.strip()
-		self.businesses[self.id] = business_name
-		business = {"id": self.id, "name": business_name}
+		self.businesses[id] = business_name
+		business = {"id": id, "business_name": business_name}
 		return business
 
 
@@ -23,17 +23,15 @@ class User():
 
 		return self.businesses
 
+
 	def view_a_business(self, id):
 		""" method allows a user to a view a business"""
-		my_list = []
-		if id in self.businesses.keys():
-			my_business = self.businesses[id]
-			my_list.append(my_business)
 
+		if id in self.businesses.keys():
+			my_business = (self.businesses[id])
+			return my_business
 		else:
 			return "business not registered!"
-
-		return my_list
 
 
 		  
@@ -41,21 +39,24 @@ class User():
 		""" method allows a user update a registered business"""
 
 		if id in self.businesses.keys():
-			new_name.strip()  #stripping any leading or tailing spaces
-			self.businesses[id] = new_name
+			name = new_name
+			name.strip()  #stripping any leading or tailing spaces
+			self.businesses[id] = name
+			return self.businesses[id]
 		else:
 			return "business doesnot exist!"
-		return self.businesses
+
 
 	def delete_registered_business(self, id):
 		""" method allows a user delete a business they registered"""
 
 		if id in self.businesses.keys():
 			del self.businesses[id]
+			return self.businesses
 		else:
 			return "business doesnot exist"
 
-		return self.businesses
+
 
 	def add_review(self, id, review):
 		""" method allows a user add a review to a registered business"""
@@ -105,10 +106,11 @@ class User():
 
 def main():
 	biz = User()
-	biz.register_business(1,'roko')
-	biz.register_business(2,'rocks')
-	biz.register_business(3,'fruits')
+	biz.register_business('roko')
+	biz.register_business('rocks')
+	biz.register_business('fruits')
 	biz.update_registered_business(2,'ugs')
+	biz.view_a_business(1)
 	biz.delete_registered_business(2)
 	biz.add_review(3,'lovely')
 	biz.add_review(3,'smart')
@@ -116,8 +118,9 @@ def main():
 
 	biz.view_a_business(1)
 
-	print(biz.business)
+	print(biz.businesses)
 	print(biz.view_registered_businesses())
+	print(biz.view_a_business(3))
 	print(biz.view_reviews())
 	print(biz.view_business_reviews(3))
 
