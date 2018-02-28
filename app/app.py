@@ -120,26 +120,28 @@ def business():
 		return jsonify({'businesses': my_businesses}), 200
 
 
-@app.route('/api/v1/businesses/<business_id>', methods = ['PUT', 'GET', 'DELETE'])
-def update_get_delete_business(business_id):
+@app.route('/api/v1/businesses/<id>', methods = ['PUT', 'GET', 'DELETE'])
+def update_get_delete_business(id):
 	""" route allows a user update Delete and get a registered business """
 
-	if request.method == 'PUT':
+	if request.method == "PUT":
 		""" Update  a registered business """
 
 		data = request.get_json()
 		if data['new_name']:
-			if user.update_registered_business(business_id, data['new_name']):
-				return jsonify({'message': 'Business updated successfully!'}), 200
+			update = user.update_registered_business(int(id), data['new_name'])
+			if update:
+				return jsonify({'Business updated to': update}), 200
 
 			return jsonify({'message': 'Business not registered here!'}), 404
 
 		return jsonify({'message': 'please fill new_name'}), 400
 
-	elif request.method == 'DELETE':
+
+	elif request.method == "DELETE":
 		""" deletes a registered business """
 
-		business = user.delete_registered_business(business_id)
+		business = user.delete_registered_business(int(id))
 		if not business:
 			return jsonify({'message': 'business not registered here'}), 404
 
@@ -148,7 +150,7 @@ def update_get_delete_business(business_id):
 	else:
 		""" enable user view a registered business """
 
-		business = user.view_a_business(business_id)
+		business = user.view_a_business(int(id))
 		if not business:
 			return jsonify({'message': 'Business not registered here'}), 404
 
