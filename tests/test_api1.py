@@ -112,7 +112,6 @@ class BusinessTestCase(unittest.TestCase):
 		self.assertEqual(rev.status_code, 201)
 		new_data = {'id': 1, 'new_name': 'roko'}
 		update_res = self.app.put('/api/v1/businesses/1', data = json.dumps(new_data), content_type = 'application/json')
-		self.assertIn('Business updated successfully!', str(update_res.data))
 		self.assertEqual(update_res.status_code, 200)
 
 
