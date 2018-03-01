@@ -169,10 +169,10 @@ def update_get_delete_business(id):
 
 		business = user.delete_registered_business(int(id))
 		if not business:
-			return jsonify({'success': True,
+			return jsonify({'success': False,
 				            'message': 'business not registered here'}), 404
 
-		return jsonify({'success': False,
+		return jsonify({'success': True,
 			            'message': 'Business deleted successfully'}), 200
 
 	else:
