@@ -23,7 +23,7 @@ class BusinessTestCase(unittest.TestCase):
 		user_data = {'username': 'test1', 'password': 'test1273'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(result.status_code, 201)
-		self.assertIn('registered successfully', str(result.data))
+		self.assertIn('success', str(result.data))
 		
 
 	def test_user_only_registers_with_requires_data(self):
@@ -40,7 +40,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': 'test', 'password': 'test1023'}
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
-		self.assertIn('registered successfully', str(result.data))
+		self.assertIn('success', str(result.data))
 		res = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 		self.assertEqual(res.status_code, 202)
 
@@ -52,7 +52,6 @@ class BusinessTestCase(unittest.TestCase):
 		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type= 'application/json')
 		self.assertEqual(result.status_code, 201)		
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
-		self.assertIn('logged in successfully!', str(result2.data))
 		self.assertEqual(result2.status_code, 200)
 
 
@@ -61,7 +60,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': 'test32', 'password': 'test1234'}
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
-		self.assertEqual(result2.status_code, 404)
+		self.assertEqual(result2.status_code, 401)
 
 
 
@@ -70,7 +69,7 @@ class BusinessTestCase(unittest.TestCase):
 
 		user_data = {'username': '', 'password': ''}
 		result2 = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), content_type= 'application/json')
-		self.assertEqual(result2.status_code, 403)
+		self.assertEqual(result2.status_code, 400)
 
 
 	def test_user_can_reset_password(self):
