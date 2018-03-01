@@ -10,9 +10,12 @@ class User():
 	def register_business(self, business_name):
 		""" method allows a user to register a business"""
 
-		id = (len(self.businesses.keys())) + 1
-		#stripping any leading or tailing spaces
-		business_name.strip()
+		#id = (len(self.businesses.keys())) + 1
+		if len(self.businesses.keys()) == 0:
+			id = 1
+		else:
+			id = (max(self.businesses.keys())) + 1
+
 		self.businesses[id] = business_name
 		business = {"id": id, "business_name": business_name}
 		return business
@@ -27,11 +30,7 @@ class User():
 	def view_a_business(self, id):
 		""" method allows a user to a view a business"""
 
-		if id in self.businesses.keys():
-			my_business = (self.businesses[id])
-			return my_business
-		else:
-			return "business not registered!"
+		return self.businesses.get(id, "business not registered")
 
 
 		  
@@ -39,20 +38,20 @@ class User():
 		""" method allows a user update a registered business"""
 
 		if id in self.businesses.keys():
-			name = new_name
-			name.strip()  #stripping any leading or tailing spaces
-			self.businesses[id] = name
-			return self.businesses[id]
-		else:
-			return "business doesnot exist!"
+			self.businesses[id] = new_name.strip()
+		
+		return self.businesses.get(id, "business not registered")
+
+
 
 
 	def delete_registered_business(self, id):
 		""" method allows a user delete a business they registered"""
 
 		if id in self.businesses.keys():
+			business_name = self.businesses[id]
 			del self.businesses[id]
-			return self.businesses
+			return "business {} deleted successfully".format(business_name)
 		else:
 			return "business doesnot exist"
 
@@ -61,8 +60,8 @@ class User():
 	def add_review(self, id, review):
 		""" method allows a user add a review to a registered business"""
 
-		if id in self.businesses.keys():
-			if id in self.business_reviews.keys():
+		if self.businesses.get(id):
+			if self.business_reviews.get(id):
 				(self.business_reviews[id]).append(review)
 			else:
 				reviews = []
@@ -119,6 +118,7 @@ def main():
 	biz.view_a_business(1)
 
 	print(biz.businesses)
+	print(biz.delete_registered_business(3))
 	print(biz.view_registered_businesses())
 	print(biz.view_a_business(3))
 	print(biz.view_reviews())
