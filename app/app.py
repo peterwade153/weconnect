@@ -200,11 +200,14 @@ def review_and_view_business_reviews(business_id):
 		if reviews_match:
 			my_review = user.add_review(int(business_id), data['review'])
 			if my_review:
-				return jsonify({'message': 'Review added successfully!'}), 201
+				return jsonify({'success': True,
+					            'message': 'Review added successfully!'}), 201
 
-			return jsonify({'message':'business not registered here'}), 404
+			return jsonify({'success': False,
+				            'message':'business not registered here'}), 404
 
-		return jsonify({'message': 'Review should have only charaters and digits'}), 403
+		return jsonify({'success': False,
+			            'message': 'Review should have only charaters and digits'}), 403
 
 	#GET
 	else:
@@ -214,7 +217,7 @@ def review_and_view_business_reviews(business_id):
 				            'reviews': business}), 200
 
 		return jsonify({'success': False,
-			            'message':'no reviews registered yet'}), 404
+			            'message':'No reviews registered yet or Business not registered'}), 404
 
 
 if __name__ == '__main__':
