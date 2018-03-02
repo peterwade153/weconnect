@@ -17,16 +17,22 @@ businesses they have interacted with.
  - delete a business by a user that registered it
  - review a business
  - view reviews for a registered business
+ 
 ## Create a virtual enviromenet and activate it
+
 $ python3 -m venv weconnect
 to activate
 $ source bin/activate
 ## Install requirements
+
 $ pip install -r requirements.txt
 
 ## To run application
+
 $ python app.py
+
 ## Usage
+
 To test the api using postman(chrome extension) with the url below
 
 $ https://weconnect-my.herokuapp.com/
@@ -34,3 +40,10 @@ $ https://weconnect-my.herokuapp.com/
 To view the api documentation use the link below
 
 $ https://peterweconnect.docs.apiary.io/
+
+## User interfaces
+
+To view the user interfaces click on the link below
+
+$ https://peterwade153.github.io/
+
