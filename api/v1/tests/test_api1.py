@@ -117,7 +117,7 @@ class BusinessTestCase(unittest.TestCase):
 	def test_deleting_registered_business(self):
 		""" tests a business can be deleted"""
 
-		business_data = {'business_name': 'real_demo'}
+		business_data = {'business_name': 'myrealdemo'}
 		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
 		self.assertEqual(rev.status_code, 201)
 		del_result = self.app.delete('/api/v1/businesses/1', content_type= 'application/json')
