@@ -76,10 +76,12 @@ class BusinessTestCase(unittest.TestCase):
 		""" tests aregistered user can reset their password """
 
 		user_data = {'username': 'test12', 'password': 'test12345'}
-		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
-		self.assertEqual(result.status_code, 201)
+		myresult = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), headers = {'Content-Type':'application/json'})
+		self.assertEqual(myresult.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 		new_data = {'username': 'test12', 'password': 'test12345', 'new_password': 'test123456'}
-		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
+		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(res.status_code, 200)
 
 
@@ -87,64 +89,92 @@ class BusinessTestCase(unittest.TestCase):
 		""" only registered users should change passwords"""
 
 		user_data = {'username': 'test112', 'password': 'test1233'}
-		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data), headers = {'Content-Type':'application/json'})
 		self.assertEqual(result.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data), headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 		new_data = {'username': 'test122', 'password': 'test1233', 'new_password': 'test12345'}
-		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), content_type = 'application/json')
+		res = self.app.post('/api/v1/auth/reset-password', data = json.dumps(new_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(res.status_code, 404)
 
 
 
 	def test_business_registered_successfully(self):
 		""" tests a business can be created successfully """
+		user_data = {'username': 'test123', 'password': 'test1234'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		self.assertEqual(result.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 
-		business_data = {'business_name': 'demo'}
-		res = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type= 'application/json')
+		business_data = {'business_name': 'mydemo'}
+		res = self.app.post('/api/v1/businesses', data = json.dumps(business_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(res.status_code, 201)
 
 
 	def test_editing_registered_business(self):
 		""" tests a business can be updated """
+		user_data = {'username': 'test1263', 'password': 'test1234'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		self.assertEqual(result.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 		
 		business_data = {'business_name': 'realdemo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(rev.status_code, 201)
 		new_data = {'id': 1, 'new_name': 'roko'}
-		update_res = self.app.put('/api/v1/businesses/1', data = json.dumps(new_data), content_type = 'application/json')
+		update_res = self.app.put('/api/v1/businesses/1', data = json.dumps(new_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(update_res.status_code, 200)
 
 
 	def test_deleting_registered_business(self):
 		""" tests a business can be deleted"""
+		user_data = {'username': 'test12623', 'password': 'test1234'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		self.assertEqual(result.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 
 		business_data = {'business_name': 'myrealdemo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(rev.status_code, 201)
-		del_result = self.app.delete('/api/v1/businesses/1', content_type= 'application/json')
+		del_result = self.app.delete('/api/v1/businesses/1', headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(del_result.status_code, 200)
 
 
 	def test_adding_review(self):
 		""" tests adding a review to a business """
+		user_data = {'username': 'test1863', 'password': 'test1234'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		self.assertEqual(result.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 
 		business_data = {'business_name': 'ourdemo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(rev.status_code, 201)
 		review = {'review': 'Fantastic'}
-		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review), content_type = 'application/json')
+		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(review_res.status_code, 201)
 
 
 	def test_viewing_registered_business(self):
 		""" tests viewing business reviews """
+		user_data = {'username': 'test1963', 'password': 'test1234'}
+		result = self.app.post('/api/v1/auth/register', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		self.assertEqual(result.status_code, 201)
+		res = self.app.post('/api/v1/auth/login', data = json.dumps(user_data),  headers = {'Content-Type':'application/json'})
+		token = json.loads(res.data.decode())['token']
 
-		business_data = {'business_name': 'mydemo'}
-		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), content_type = 'application/json')
+
+		business_data = {'business_name': 'myDdemo'}
+		rev = self.app.post('/api/v1/businesses', data = json.dumps(business_data), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(rev.status_code, 201)
 		review = {'review': 'Fantastic'}
-		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review), content_type = 'application/json')
+		review_res = self.app.post('/api/v1/businesses/1/reviews', data = json.dumps(review), headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(review_res.status_code, 201)
-		get_res = self.app.get('/api/v1/businesses/1/reviews')
+		get_res = self.app.get('/api/v1/businesses/1/reviews', headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(get_res.status_code, 200)
 
 
