@@ -2,6 +2,9 @@ import sys
 sys.path.append('..')
 import re
 import json
+import datetime
+import jwt
+from functools import wraps
 from flask import Flask, request, session, jsonify, make_response, render_template
 from classes.user import User
 
@@ -14,6 +17,34 @@ user = User()
 
 ''' dictionary to store our users'''
 users = {}
+
+
+
+def token_required (f):
+	""" decoding received token """
+	@wraps(f)
+	def decorate(*args, **kwargs):
+		token = None
+
+		if 'Authorization' in request.headers:
+			token = request.headers['Authorization']
+
+		if not token:
+			return jsonify({'message': 'Token is missing'}), 403
+		try:
+			payload = jwt.decode(token, app.secret_key)
+			current_user = payload['sub']
+
+		except jwt.ExpiredSignatureError:
+			return jsonify ({'message': 'Expired token!'})
+
+		except jwt.InvalidTokenError:
+			return jsonify({'message': 'Invalid token!'})
+
+		return f(current_user, *args, **kwargs)
+
+	return decorate
+
 
 
 @app.route('/')
@@ -60,7 +91,6 @@ def login():
 	""" route enables a user to login """
 
 	data = request.get_json()
-
 	username = data['username']
 	name_match = re.match('(^[A-Za-z0-9]+$)', username)
 	password = data['password']
@@ -71,17 +101,33 @@ def login():
 		#if check_password_hash(users[username], password):
 		if ( username, password ) in users.items():
 			''' checking user is already registered '''
+
+			# generate access token
+			payload = {
+			        'exp': datetime.datetime.utcnow() + datetime.timedelta( minutes = 15),
+			        'iat': datetime.datetime.utcnow(),
+			        'sub': 1
+			}
+			token = jwt.encode (
+				payload,
+				app.secret_key,
+				algorithm = 'HS256'
+				)
+
 			session['logged_in'] = True
 			return jsonify({'success': True,
-				            'message': 'Logged in successfully!'}), 200
+				            'message': 'Logged in successfully!',
+				            'token': token.decode('UTF-8')}), 200
+
 		return jsonify({'message': 'Username and password dont match'}), 401
 	else:
 		return jsonify({'success': False, 
-			            'message':'Username and password should atleast be 4 characters or digits'}),400
+			            'message':'Username and password should atleast be 4 characters or digits',}),400
 
 
 @app.route('/api/v1/auth/logout', methods = ['POST'])
-def logout():
+@token_required
+def logout(current_user):
 	""" route for logging out alogged in user """
 
 	session.pop('logged_in', None)
@@ -90,7 +136,8 @@ def logout():
 
 
 @app.route('/api/v1/auth/reset-password', methods = ['POST'])
-def reset_password():
+@token_required
+def reset_password(current_user):
 	""" route enables user reset their password """
 
 	data = request.get_json()
@@ -117,7 +164,8 @@ def reset_password():
 
 
 @app.route('/api/v1/businesses', methods = ['POST', 'GET'])
-def business():
+@token_required
+def business(current_user):
 	""" route enables user register a business and view businesses"""
 
 	if request.method == 'POST':
@@ -152,7 +200,8 @@ def business():
 
 
 @app.route('/api/v1/businesses/<id>', methods = ['PUT', 'GET', 'DELETE'])
-def update_get_delete_business(id):
+@token_required
+def update_get_delete_business(current_user, id):
 	""" route allows a user update Delete and get a registered business """
 
 	if request.method == "PUT":
@@ -199,7 +248,8 @@ def update_get_delete_business(id):
 
 
 @app.route('/api/v1/businesses/<business_id>/reviews', methods = ['POST', 'GET'])
-def review_and_view_business_reviews(business_id):
+@token_required
+def review_and_view_business_reviews(current_user, business_id):
 	""" route allows user to review and view its reviews business """
 
 	if request.method == 'POST':
