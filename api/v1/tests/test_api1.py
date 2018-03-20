@@ -4,6 +4,7 @@ import json
 import unittest
 from app.app import app
 
+
 class BusinessTestCase(unittest.TestCase):
 
 	def setUp(self):
