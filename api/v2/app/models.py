@@ -1,8 +1,9 @@
-from flask_sqlalchemy import SQLAchemy 
+from werkzeug.security import generate_password_hash
+from flask_sqlalchemy import SQLAlchemy 
 
 
 #instantiate db object with sqlachemy
-db = SQLAchemy()
+db = SQLAlchemy()
 
 class User(db.Model):
 	""" user table """
@@ -38,8 +39,8 @@ class Business(db.Model):
 	business_name = db.Column(db.String(100))
 	business_category = db.Column(db.String(200))
 	business_location = db.Column(db.String(100))
-	created_on = db.Column(db.Datetime, default = datetime.datetime.utcnow())
-	modified_on = db.Column(db.Datetime, default = datetime.datetime.utcnow(), onupdate = datetime.datetime.utcnow())
+	created_on = db.Column(db.DateTime, default = db.func.utc_timestamp())
+	modified_on = db.Column(db.DateTime, default = db.func.utc_timestamp(), onupdate = db.func.utc_timestamp())
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	user = db.relationship('User', backref = db.backref('businesses', lazy = 'dynamic'))
 
@@ -53,4 +54,21 @@ class Business(db.Model):
 		"""saves the business"""
 		db.session.add(self)
 		db.session.commit()
-		
+
+class Review(db.Model):
+	"""business reviews table"""
+
+	__tablename__ = 'reviews'
+	id = db.Column(db.Integer, primary_key = True)
+	review = db.Column(db.String(200))
+	business_id = db.Column(db.Integer, db.ForeignKey('businesses.id'))
+	business = db.relationship('Business', backref = db.backref('reviews', lazy = 'dynamic'))
+
+	def __init__(self, review, business_id):
+		self.review = review
+		self.business_id = business_id
+
+	def save(self):
+		"""save the reviews"""
+		db.session.add(self)
+		db.session.commit()
