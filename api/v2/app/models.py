@@ -1,3 +1,4 @@
+import datetime
 from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy 
 
@@ -10,7 +11,7 @@ class User(db.Model):
 
 	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(100), unique = True)
+	username = db.Column(db.String(100))
 	email = db.Column(db.String(100), unique = True)
 	password = db.Column(db.String(150))
 
@@ -36,7 +37,7 @@ class Business(db.Model):
 
 	__tablename__ = 'businesses'
 	id = db.Column(db.Integer, primary_key = True)
-	business_name = db.Column(db.String(100))
+	business_name = db.Column(db.String(100), unique = True)
 	business_category = db.Column(db.String(200))
 	business_location = db.Column(db.String(100))
 	created_on = db.Column(db.DateTime, default = db.func.utc_timestamp())
@@ -72,3 +73,18 @@ class Review(db.Model):
 		"""save the reviews"""
 		db.session.add(self)
 		db.session.commit()
+
+
+class BlacklistToken(db.Model):
+	""" model for blacklisted tokens"""
+
+	__tablename__= 'blacklist_tokens'
+	id = db.Column(db.Integer, primary_key = True)
+	token = db.Column(db.String(500), unique = True, nullable = False)
+	blacklisted_on = db.Column(db.DateTime)
+
+	def __init__(self, token):
+		self.token = token
+		self.blacklisted_on = datetime.datetime.now()
+
+
