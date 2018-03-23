@@ -27,7 +27,7 @@ def register_user():
 	email_match = re.match('^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\.[A-Za-z0-9-.]+$', data['email'])
 	password_match = re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
-	if name_match and email_match and password_match:
+	if name_match and email_match and password_match:  #if the data passes our validity check
 
 		user = User.query.filter_by(email = data['email']).first()         #check if user is not registered already
 		if not user:
@@ -81,25 +81,4 @@ def login_user():
 
 
 
-@app.route('/api/v2/auth/reset-password', methods = ['POST'])
-def reset_password():
-	""" route enables user reset-password """
 
-	data = request.get_json()
-	email_match = re.match('^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\.[A-Za-z0-9-.]+$', data['email'])
-	new_password_match = re.match('^[A-Za-z0-9]{4,}$', data['new_password'])
-
-	if  email_match and new_password_match:
-
-		user = User.query.filter_by( email = data['email']).first()
-		if user:
-			user.password = generate_password_hash(data['new_password'], method='sha256')
-			db.session.commit()
-			return jsonify({'message': 'Password reset successfully',
-				            'success': True}), 200
-
-		return jsonify({'message':'An error occurred, check and try again!',
-			            'success': False}), 403
-
-	return jsonify({'message':'Please all fields are required, should be characters or digits and email should be valid!',
-		            'success': False}), 403
