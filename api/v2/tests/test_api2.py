@@ -32,17 +32,17 @@ class WeconnectTestCase(unittest.TestCase):
 		             'email': email,
 		             'password': password
 		            }
-		return self.app.post('/api/v2/auth/register', data = json.dumps(self.user_data), content_type = 'application/json')
+		return self.app.post('/api/v2/auth/register', data = json.dumps(user_data), content_type = 'application/json')
 
 	def login_user(self, email = 'demo@test.com', password = 'demo12345'):
 		""" func that logs in user """
 		user_data = {'email': email,
 		             'password': password
 		             }
-		return self.app.post('/api/v2/auth/login', data = json.dumps(self.user_data), content_type = 'application/json')
+		return self.app.post('/api/v2/auth/login', data = json.dumps(user_data), content_type = 'application/json')
 
 
-	def test_business_registration():
+	def test_business_registration(self):
 		""" tests a user can register a business """
 
 		self.register_user()
@@ -53,7 +53,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(reg.status_code, 201)
 		self.assertIn('registered successfully', str(reg.data))
 
-	def test_business_already_registered():
+	def test_business_already_registered(self):
 		""" tests abusiness can be registered twice """
 
 		self.register_user()
@@ -68,7 +68,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertIn('Business already registered', str(reg.data))
 
 
-	def test_invalid_data():
+	def test_invalid_data(self):
 		""" tests invalid data is not allowed """
 
 		self.register_user()
@@ -80,7 +80,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(rev.status_code, 403)
 
 
-	def test_viewing_business():
+	def test_viewing_business(self):
 		""" tests a user can view a business """
 
 		self.register_user()
@@ -93,7 +93,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(reg.status_code, 200)
 			                                                                                        
 
-	def test_editing_business():
+	def test_editing_business(self):
 		""" tests a user can edit a registered business """
 		self.register_user()
 		result = self.login_user()
@@ -107,7 +107,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)
 
 
-	def test_deleting_business():
+	def test_deleting_business(self):
 		""" tests a user can delete a registered business """
 
 		self.register_user()
@@ -120,7 +120,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)                                                                                         
 
 
-	def test_adding_review():
+	def test_adding_review(self):
 		""" tests a user can review a business """
 
 		self.register_user()
@@ -133,7 +133,7 @@ class WeconnectTestCase(unittest.TestCase):
 			                                                                                                    'Authorization':token}) 
 		self.assertEqual(result.status_code, 201)
 
-	def test_invalid_review_data():
+	def test_invalid_review_data(self):
 		""" tests invalid review data is not acceppted """
 
 		self.register_user()
@@ -149,7 +149,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 
 
-	def test_viewing_business_reviews():
+	def test_viewing_business_reviews(self):
 		""" tests a user can view business reviews """
 
 		self.register_user()
