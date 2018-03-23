@@ -104,12 +104,12 @@ class WeconnectTestCase(unittest.TestCase):
 		result = self.login_user()
 		token = json.loads(result.data.decode())['token']
 		reg = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
-			                                          headers = {'Content-Type':'application/json','Authorization':token})
+			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(reg.status_code, 201)
 		new_business = {'business_name':'temboltd','business_location':'kawempe','business_category':'milling'}
 		res = self.app.put('/api/v2/businesses/1', data = json.dumps(new_business), 
-			                                          headers = {'Content-Type':'application/json','Authorization':token})
+			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                   
 		self.assertEqual(res.status_code, 200)
 
@@ -121,7 +121,7 @@ class WeconnectTestCase(unittest.TestCase):
 		reg = self.login_user()
 		token = json.loads(reg.data.decode())['token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
-			                                           headers = {'Content-Type':'application/json','Authorization':token})
+			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
 		res = self.app.delete('/api/v2/businesses/1', headers = {'Content-Type':'application/json','Authorization':token})
@@ -135,11 +135,11 @@ class WeconnectTestCase(unittest.TestCase):
 		reg = self.login_user()
 		token = json.loads(reg.data.decode())['token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
-			                                        headers = {'Content-Type':'application/json','Authorization':token})
+			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
 		result = self.app.post('/api/v2/businesses/1/reviews', data = json.dumps(self.review_data), 
-			                                          headers = {'Content-Type':'application/json','Authorization':token}) 
+			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
 			                                                                                                    
 		self.assertEqual(result.status_code, 201)
 
@@ -150,12 +150,12 @@ class WeconnectTestCase(unittest.TestCase):
 		reg = self.login_user()
 		token = json.loads(reg.data.decode())['token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
-			                                              headers = {'Content-Type':'application/json','Authorization':token})
+			                                    headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
 		review = {'review':'Great services and wonderful customer care'}
 		result = self.app.post('/api/v2/businesses/1/reviews', data = json.dumps( review ), 
-			                                               headers = {'Content-Type':'application/json','Authorization':token})
+			                                       headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                                     
 		self.assertEqual(result.status_code, 403)
 
@@ -168,15 +168,16 @@ class WeconnectTestCase(unittest.TestCase):
 		reg = self.login_user()
 		token = json.loads(reg.data.decode())['token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
-			                                          headers = {'Content-Type':'application/json','Authorization':token})
+			                                    headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
 		result = self.app.post('/api/v2/businesses/1/reviews', data = json.dumps(self.review_data), 
-			                                             headers = {'Content-Type':'application/json','Authorization':token}) 
+			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
 			                                                                                                    
 		self.assertEqual(result.status_code, 201)
 
-		review = self.app.get('/api/v2/businesses/1/reviews', headers = {'Content-Type':'application/json','Authorization':token}) 
+		review = self.app.get('/api/v2/businesses/1/reviews', 
+			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
 		self.assertEqual(review.status_code, 200)
 			                                                 
 
