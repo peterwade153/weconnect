@@ -76,7 +76,7 @@ class AuthTestCase(unittest.TestCase):
 		token = json.loads(rev.data.decode())['token']
 		result = self.app.post('/api/v2/auth/logout', headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(result.status_code, 200)
-		
+
 
 	def test_user_reset_password(self):
 		""" tests user successfully reset their passsword """
@@ -88,8 +88,9 @@ class AuthTestCase(unittest.TestCase):
 		token = json.loads(rev.data.decode())['token']
 
 		new_data = {'email': 'demo@test.com', 'new_password': 'tests1233'}
-		res = self.app.post('/api/v2/auth/reset-password', data = json.dumps(new_data), headers = {'Content-Type':'application/json',
-			                                                                                       'Authorization':token})
+		res = self.app.post('/api/v2/auth/reset-password', data = json.dumps(new_data), 
+			                                  headers = {'Content-Type':'application/json','Authorization':token})
+			                                                                                       
 		self.assertEqual(res.status_code, 200)
 
 
