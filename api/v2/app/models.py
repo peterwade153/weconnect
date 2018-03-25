@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from flask_sqlalchemy import SQLAlchemy 
 
 
-#instantiate db object with sqlachemy
+#create our sqlachemy object
 db = SQLAlchemy()
 
 class User(db.Model):
@@ -38,17 +38,17 @@ class Business(db.Model):
 	__tablename__ = 'businesses'
 	id = db.Column(db.Integer, primary_key = True)
 	business_name = db.Column(db.String(100), unique = True)
-	business_category = db.Column(db.String(200))
-	business_location = db.Column(db.String(100))
-	created_on = db.Column(db.DateTime, default = db.func.utc_timestamp())
-	modified_on = db.Column(db.DateTime, default = db.func.utc_timestamp(), onupdate = db.func.utc_timestamp())
+	category = db.Column(db.String(200))
+	location = db.Column(db.String(100))
+	created_on = db.Column(db.DateTime, default = datetime.datetime.now)
+	modified_on = db.Column(db.DateTime, default = datetime.datetime.now, onupdate = datetime.datetime.now)
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	user = db.relationship('User', backref = db.backref('businesses', lazy = 'dynamic'))
 
-	def __init__(self, business_name, business_category, business_location, user_id):
+	def __init__(self, business_name, category, location, user_id):
 		self.business_name = business_name
-		self.business_category = business_category
-		self.business_location = business_location
+		self.category = category
+		self.location = location
 		self.user_id = user_id
 
 	def save(self):
