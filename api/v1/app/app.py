@@ -34,10 +34,10 @@ def token_required (f):
 			current_user = payload['sub']
 
 		except jwt.ExpiredSignatureError:
-			return jsonify ({'message': 'Expired token!'})
+			return jsonify ({'message': 'Expired token!'}), 403
 
 		except jwt.InvalidTokenError:
-			return jsonify({'message': 'Invalid token!'})
+			return jsonify({'message': 'Invalid token!'}), 403
 
 		return f(current_user, *args, **kwargs)
 
