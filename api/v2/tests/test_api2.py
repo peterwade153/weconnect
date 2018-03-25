@@ -14,8 +14,8 @@ class WeconnectTestCase(unittest.TestCase):
 		app.testing = True
 		self.business_data = {
 		                      'business_name':'rokoltd',
-		                      'business_category':'construction',
-		                      'business_location':'kampala'
+		                      'category':'construction',
+		                      'location':'kampala'
 		                      }
 		self.review_data = {
 		                    'review':'Great services and wonderful customer care'
@@ -68,7 +68,7 @@ class WeconnectTestCase(unittest.TestCase):
 			                                          headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(reg.status_code, 202)
-		self.assertIn('Business already registered', str(reg.data))
+		self.assertIn('Business registered already', str(reg.data))
 
 
 	def test_invalid_data(self):
@@ -77,7 +77,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.register_user()
 		res = self.login_user()
 		token = json.loads(res.data.decode())['token']
-		invalid_data = {'business_name':'@#$$ltd','business_location':'*&(empe','business_category':'*&^^)(ling'}
+		invalid_data = {'business_name':'@#$$ltd','location':'*&(empe','category':'*&^^)(ling'}
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(invalid_data), 
 			                                         headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -107,7 +107,7 @@ class WeconnectTestCase(unittest.TestCase):
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(reg.status_code, 201)
-		new_business = {'business_name':'temboltd','business_location':'kawempe','business_category':'milling'}
+		new_business = {'business_name':'temboltd','location':'kawempe','category':'milling'}
 		res = self.app.put('/api/v2/businesses/1', data = json.dumps(new_business), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                   
@@ -153,7 +153,7 @@ class WeconnectTestCase(unittest.TestCase):
 			                                    headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
-		review = {'review':'Great services and wonderful customer care'}
+		review = {'review':' #$Great services and wonderful customer care'}
 		result = self.app.post('/api/v2/businesses/1/reviews', data = json.dumps( review ), 
 			                                       headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                                     
