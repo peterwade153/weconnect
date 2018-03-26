@@ -1,9 +1,7 @@
-import os
 import sys
 sys.path.append('..')
 import json
 import unittest
-import tempfile
 from app import app
 from app.models import db
 
@@ -12,7 +10,6 @@ class WeconnectTestCase(unittest.TestCase):
 	""" weconnect business test case """
 
 	def setUp(self):
-		self.db_fd, app.config['DATABASE'] = tempfile.mkstemp()
 		self.app = app.test_client()
 		app.testing = True
 		self.business_data = {
@@ -29,10 +26,6 @@ class WeconnectTestCase(unittest.TestCase):
 			db.drop_all()
 			db.create_all()
 
-	def tearDown(self):
-		os.close(self.db_fd)
-		os.unlink(app.config['DATABASE'])
-		
 
 	def register_user(self, username = 'demo', email = 'demo@test.com', password = 'demo12345'):
 		""" func that registers a user """
