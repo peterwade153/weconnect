@@ -16,7 +16,7 @@ services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE myconnect;" -U postgres
+  - psql -c "CREATE DATABASE testmyconnect;" -U postgres
 
 script:
   - nosetests api/v1/tests
