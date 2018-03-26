@@ -12,8 +12,6 @@ install:
   - pip install -r requirements.txt
 
 
-
-
 services:
   - postgresql
 
@@ -21,9 +19,8 @@ before_script:
   - psql -c "CREATE DATABASE testmyconnect;" -U postgres
 
 script:
-  - pytest --cov api/v1/tests
-
-  - pytest --cov api/v2/tests
+  - pythom -m pytest --cov api/v1/tests
+  - python -m pytest --cov api/v2/tests
 
 
 
