@@ -138,23 +138,63 @@ def businesses(current_user):
 
 	else:   
 		# GET viewing businesses
-		businesses = Business.query.all()
-		if not businesses:
+
+		name = request.args.get('q', None)
+		limit = request.args.get('limit', None, type = int)
+		page = request.args.get('page', 1, type = int)
+		location = request.args.get('location', None)
+		category = request.args.get('category', None)
+
+		if name:
+			business_query = Business.query.filter_by(business_name = name).all()
+			if business_query:
+				business_info = [business.business_dict for business in business_query]
+				return jsonify({'success': True,
+			                    'business': business_info}), 200 
+
 			return jsonify({'success': False,
 				            'message': 'No business found'}), 404
+		if limit:
+			business_query = Business.query.paginate(page, limit, False)
+			response = {
+			     'Businesses':[i.business_dict for i in business_query.items],
+			     'pages': business_query.pages,
+			     'next':business_query.next_num,
+			     'current':business_query.page,
+			     'prev':business_query.prev_num
+			}
+
+			return jsonify(response), 200
+
+		if location:
+			location_query = Business.query.filter_by(location = location).all()
+			if location_query:
+				business_info = [i.business_dict for i in location_query]
+				return jsonify({'success': True,
+					            'business': business_info}), 200
+			return jsonify({'success': False,
+				            'message': 'No business found'}), 404
+
+		if category:
+			category_query = Business.query.filter_by(category = category).all()
+			if category_query:
+				business_info = [i.business_dict for i in category_query]
+				return jsonify({'success': True,
+					            'business': business_info}), 200
+			return jsonify({'success': False,
+				            'message': 'No business found'}), 404
+
+
 		else:
-			business_list = []
-			for business in businesses:
-				business_info = {}
-				business_info['id'] = business.id
-				business_info['business_name'] = business.business_name
-				business_info['category'] = business.category
-				business_info['location'] = business.location
+			businesses = Business.query.all()
+			if not businesses:
+				return jsonify({'success': False,
+				               'message': 'No business found'}), 404
+			else:
+				business_list = [business.business_dict for business in businesses]
 
-				business_list.append(business_info)
-
-			return jsonify({'Success': True,
-				            'Business': business_list}), 200
+				return jsonify({'Success': True,
+				                'Business': business_list}), 200
 
 
 
@@ -168,13 +208,7 @@ def business(current_user, id):
 
 		business = Business.query.filter_by(id = id).first()
 		if business:
-			business_info = {}
-			business_info['id'] = business.id
-			business_info['business_name'] = business.business_name
-			business_info['category'] = business.category
-			business_info['location'] = business.location
-			business_info['created_on'] = business.created_on
-			business_info['modified_on'] = business.modified_on
+			business_info = [business.business_dict]
 
 			return jsonify({'success': True,
 			                'business': business_info}), 200
@@ -187,7 +221,7 @@ def business(current_user, id):
 		''' method only allows business owner to edit it '''
 
 		data = request.get_json()
-		name_match = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', data['business_name'])
+		name_match = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', data['new_name'])
 		category_match = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', data['category'])
 		location_match = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', data['location'])
 
@@ -196,7 +230,7 @@ def business(current_user, id):
 			business = Business.query.filter_by(id = id).first()
 			if business:
 				if business.user_id == current_user:
-					business.business_name = data['business_name']
+					business.business_name = data['new_name']
 					business.category = data['category']
 					business.location = data['location']
 					db.session.commit()
@@ -270,6 +304,7 @@ def reviews(current_user, id):
 				review_info = {}
 				review_info['review'] = review.review
 				review_info['id'] = review.id
+				review_info['business_id'] = review.business_id
 
 				review_list.append(review_info)
 
