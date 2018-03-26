@@ -17,6 +17,9 @@ services:
 
 before_script:
   - psql -c "CREATE DATABASE myconnect;" -U postgres
+  
+env:
+  DATABASE_URL = "postgresql://postgres:admin@localhost/myconnect"
 
 script:
   - pytest api/v1/tests
