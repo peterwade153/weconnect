@@ -56,6 +56,18 @@ class Business(db.Model):
 		db.session.add(self)
 		db.session.commit()
 
+	@property
+	def business_dict(self):
+		""" retuns business """
+		return{
+		      'id': self.id,
+		      'business_name':self.business_name,
+		      'category':self.category,
+		      'location':self.location,
+		      'created_on':self.created_on,
+		      'modified_on':self.modified_on,
+		}
+
 class Review(db.Model):
 	"""business reviews table"""
 
