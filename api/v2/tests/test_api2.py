@@ -107,7 +107,7 @@ class WeconnectTestCase(unittest.TestCase):
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(reg.status_code, 201)
-		new_business = {'business_name':'temboltd','location':'kawempe','category':'milling'}
+		new_business = {'new_name':'temboltd','location':'kawempe','category':'milling'}
 		res = self.app.put('/api/v2/businesses/1', data = json.dumps(new_business), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                   
