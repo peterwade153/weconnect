@@ -18,10 +18,10 @@ services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE testmyconnect:" -U postgres
+  - psql -c "CREATE DATABASE testmyconnect;" -U postgres
 
 script:
-  -pytest --cov api/v2/tests
+  -pytest --cov api/v2/tests/
 
 
 after_success:
