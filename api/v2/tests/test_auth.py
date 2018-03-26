@@ -1,3 +1,4 @@
+import os
 import sys
 sys.path.append('..')
 import json
@@ -11,6 +12,7 @@ class AuthTestCase(unittest.TestCase):
 	"""docstring for AuthTestCase"""
 
 	def setUp(self):
+		self.db_fd, app.config['DATABASE'] = tempfile.mkstemp()
 		self.app = app.test_client()
 		app.testing = True
 		self.user_data = {'username':'demo',
@@ -22,6 +24,10 @@ class AuthTestCase(unittest.TestCase):
 			#creating tables
 			db.drop_all()
 			db.create_all()
+			
+	def tearDown(self):
+		os.close(self.db_fd)
+		os.unlink(app.config['DATABASE'])
 
 	def test_user_registration(self):
 		""" tests user registration on the app """
