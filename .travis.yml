@@ -21,6 +21,7 @@ before_script:
 script:
   - pytest api/v1/tests
   - pytest api/v2/tests
+  - coverage report
 
 
 after_success:
