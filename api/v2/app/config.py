@@ -5,7 +5,7 @@ class Config(object):
 	TESTING = False
 	CSRF_ENABLED = True
 	SECRET_KEY = os.getenv('SECRET_KEY')
-	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',"postgresql://postgres:admin@localhost/myconnect")
 
 class ProductionConfig(Config):
 	DEBUG = False
