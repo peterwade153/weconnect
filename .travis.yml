@@ -19,8 +19,9 @@ before_script:
   - psql -c "CREATE DATABASE testmyconnect;" -U postgres
 
 script:
-  - python -m pytest --cov api/v1/tests
-  - python -m pytest --cov api/v2/tests
+  - python api/v1/tests/test_api1.py
+  - python api/v2/tests/test_auth.py
+  - python api/v2/tests/test_api2.py
 
 
 
