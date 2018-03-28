@@ -15,12 +15,10 @@ install:
 services:
   - postgresql
 
-env:
-  - DATABASE_URI=postgresql://postgres:admin@localhost/testmyconnect
+
 
 before_script:
   - psql -c "CREATE DATABASE testmyconnect;" -U postgres
-  - psql -c "CREATE USER postgres WITH PASSWORD 'admin';" -U postgres
 
 
 
