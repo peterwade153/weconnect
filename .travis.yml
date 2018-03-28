@@ -16,7 +16,7 @@ services:
   - postgresql
 
 env:
-  - DATABASE_URI=postgresql://postgres:postgres@localhost/testmyconnect
+  - DATABASE_URI=postgresql://postgres:admin@localhost/testmyconnect
 
 before_script:
   - psql -c "CREATE DATABASE testmyconnect;" -U postgres
