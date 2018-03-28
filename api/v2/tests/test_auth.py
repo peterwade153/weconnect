@@ -1,9 +1,7 @@
-import os
 import sys
 sys.path.append('..')
 import json
 import unittest
-import tempfile
 from app import app
 from app.models import db
 
