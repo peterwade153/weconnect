@@ -12,18 +12,14 @@ class AuthTestCase(unittest.TestCase):
 	def setUp(self):
 		self.app = app.test_client()
 		app.testing = True
-		db.create_all()
 		self.user_data = {'username':'demo',
 		                  'email':'demo@test.com',
 		                  'password':'demo12345'
 		                  }
 
-		#with app.app_context():
-			#db.drop_all()
-			#db.create_all()
-	def tearDown(self):
-		db.session.remove()
-		db.drop_all()
+		with app.app_context():
+			db.drop_all()
+			db.create_all()
 
 
 	def test_user_registration(self):
