@@ -18,9 +18,12 @@ class AuthTestCase(unittest.TestCase):
 		                  'password':'demo12345'
 		                  }
 
-		with app.app_context():
-			db.drop_all()
-			db.create_all()
+		#with app.app_context():
+			#db.drop_all()
+			#db.create_all()
+	def tearDown(self):
+		db.session.remove()
+		db.drop_all()
 
 
 	def test_user_registration(self):
