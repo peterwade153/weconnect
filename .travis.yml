@@ -23,8 +23,9 @@ before_script:
 
 
 script:
-  - nosetests --with-cov api/v1/tests/
   - nosetests --with-cov api/v2/tests/
+  - nosetests --with-cov api/v1/tests/
+ 
 
 
 after_success:
