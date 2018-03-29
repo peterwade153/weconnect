@@ -18,14 +18,16 @@ services:
 
 
 before_script:
-  - psql -c "CREATE DATABASE myconnect;" -U postgres
+  - psql -c "CREATE DATABASE testmyconnect;" -U postgres
+
+env:
+  - DATABASE_URL = "postgresql://@localhost/testmyconnect"
 
 
 
 script:
-  - nosetests --with-cov api/v2/tests/
-  - nosetests --with-cov api/v1/tests/
- 
+  - nosetests --with-cov tests/
+
 
 
 after_success:
