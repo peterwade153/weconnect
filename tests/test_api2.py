@@ -98,6 +98,16 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(rev.status_code, 201)
 		reg = self.app.get('/api/v2/businesses/1', headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(reg.status_code, 200)
+
+	def test_getting_if_no_registered_businesses(self):
+		"""tests if no registered business """
+
+		self.register_user()
+		res = self.login_user()
+		token = json.loads(res.data.decode())['token']
+		reg = self.app.get('/api/v2/businesses', headers = {'Content-Type':'application/json','Authorization':token})
+		self.assertEqual(reg.status_code, 404)
+
 			                                                                                        
 
 	def test_editing_business(self):
@@ -116,6 +126,20 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(res.status_code, 200)
 
 
+	def test_editing_non_existing_business(self):
+		""" tests editing a non existing business"""
+
+		self.register_user()
+		result = self.login_user()
+		token = json.loads(result.data.decode())['token']
+		new_business = {'new_name':'temboltd','location':'kawempe','category':'milling'}
+		res = self.app.put('/api/v2/businesses/1', data = json.dumps(new_business), 
+			                                     headers = {'Content-Type':'application/json','Authorization':token})
+			                                                                                   
+		self.assertEqual(res.status_code, 404)
+
+
+
 	def test_deleting_business(self):
 		""" tests a user can delete a registered business """
 
@@ -127,7 +151,7 @@ class WeconnectTestCase(unittest.TestCase):
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
 		res = self.app.delete('/api/v2/businesses/1', headers = {'Content-Type':'application/json','Authorization':token})
-		self.assertEqual(res.status_code, 200)                                                                                         
+		self.assertEqual(res.status_code, 200) 
 
 
 	def test_adding_review(self):
@@ -144,6 +168,20 @@ class WeconnectTestCase(unittest.TestCase):
 			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
 			                                                                                                    
 		self.assertEqual(result.status_code, 201)
+
+
+	def test_reviewing_non_registered_business(self):
+		""" tests user reviewing a no  existent business"""
+
+		self.register_user()
+		reg = self.login_user()
+		token = json.loads(reg.data.decode())['token']
+		result = self.app.post('/api/v2/businesses/1/reviews', data = json.dumps(self.review_data), 
+			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
+			                                                                                                    
+		self.assertEqual(result.status_code, 404)
+
+
 
 	def test_invalid_review_data(self):
 		""" tests invalid review data is not acceppted """
@@ -181,6 +219,22 @@ class WeconnectTestCase(unittest.TestCase):
 		review = self.app.get('/api/v2/businesses/1/reviews', 
 			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
 		self.assertEqual(review.status_code, 200)
+
+	def test_no_reviews(self):
+		''' tests if there are no reviews to return to user '''
+
+		self.register_user()
+		reg = self.login_user()
+		token = json.loads(reg.data.decode())['token']
+		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
+			                                    headers = {'Content-Type':'application/json','Authorization':token})
+			                                                                                        
+		self.assertEqual(rev.status_code, 201)
+		review = self.app.get('/api/v2/businesses/1/reviews', 
+			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
+		self.assertEqual(review.status_code, 404)
+
+
 			                                                 
 
 
