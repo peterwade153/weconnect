@@ -43,20 +43,42 @@ GET     |  api/v2/businesses/id/reviews   |        Get reviews for a business
 ---
 
 ## Create a virtual enviroment and activate it
-
+<pre>
 $ python3 -m venv weconnect
-to activate
+</pre>
+Change directory to weconnect and clone the repository to the folder
+<pre>
+https://github.com/peterwade153/weconnect.git
+</pre>
+To activate the environment
+<pre>
 $ source bin/activate
+</pre>
+<pre>
+Create a database myconnect
+
+$ export SECRET_KEY="to something secret"
+$ export APP_SETTINGS="config.DevelopmentConfig"
+$ export DATABASE_URL="postgresql://your-username:your-password@localhost/myconnect"
+</pre>
 
 ---
 
 ## Install requirements
-
+<pre>
 $ pip install -r requirements.txt
+</pre>
+To run migrations
+<pre>
+$ python manage.py init
+$ python manage.py migrate
+$ python manage.py upgrade
+</pre>
 
 ## To run application
-
+<pre>
 $ python run.py
+</pre>
 
 ## Usage
 
