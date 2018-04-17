@@ -20,13 +20,6 @@ class User(db.Model):
 		self.email = email
 		self.password = generate_password_hash(password, method='sha256')
 
-	def save(self):
-		db.session.add(self)
-		db.session.commit()
-
-	def delete(self):
-		db.session.delete(self)
-		db.session.commit()
 
 	def __repr__(self):
 		# represnts object instance of model whenever it is queried
@@ -56,8 +49,7 @@ class Business(db.Model):
 		db.session.add(self)
 		db.session.commit()
 
-	@property
-	def business_dict(self):
+	def business_object(self):
 		""" retuns business """
 		return{
 		      'id': self.id,
@@ -76,6 +68,8 @@ class Review(db.Model):
 	review = db.Column(db.String(200))
 	business_id = db.Column(db.Integer, db.ForeignKey('businesses.id'))
 	business = db.relationship('Business', backref = db.backref('reviews', lazy = 'dynamic'))
+	reviewed_on = db.Column(db.DateTime, default = datetime.datetime.now)
+
 
 	def __init__(self, review, business_id):
 		self.review = review
@@ -85,6 +79,7 @@ class Review(db.Model):
 		"""save the reviews"""
 		db.session.add(self)
 		db.session.commit()
+
 
 
 class BlacklistToken(db.Model):
