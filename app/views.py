@@ -23,9 +23,9 @@ def token_required(f):
 
 	@wraps(f)
 	def decorate(*args, **kwargs):
-		token=None
+		token = None
 		if 'Authorization' in request.headers:
-			token=request.headers['Authorization']
+			token = request.headers['Authorization']
 
 		if not token:
 			return jsonify({'Message':'Token is missing!'}), 403
@@ -246,7 +246,7 @@ def business(current_user, id):
 		if valid_name and valid_category and valid_location:
 
 			business = Business.query.filter_by(id=id).first()
-			if not business:
+			if business:
 				if business.user_id==current_user:
 					business.business_name=data['new_name']
 					business.category=data['category']
