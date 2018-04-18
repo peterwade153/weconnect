@@ -12,20 +12,20 @@ from app.models import db, User
 
 auth = Blueprint('auth', __name__)
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI']=os.getenv('DATABASE_URL')
 
 
 @app.route('/api/v2/auth/register', methods=['POST'])
 def register_user():
 	""" route registers a user """
 
-	data = request.get_json()
+	data=request.get_json()
 
-	valid_name = re.match('^[A-Za-z0-9]{,100}$', data['username'])
-	valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$', data['email'])
-	valid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
+	valid_name=re.match('^[A-Za-z0-9]{,100}$', data['username'])
+	valid_email=re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$', data['email'])
+	valid_password=re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
 	#if the data passes our validity check
 	if valid_name and valid_email and valid_password:  
@@ -56,14 +56,14 @@ def register_user():
 def login_user():
 	""" route logs in registered user """
 
-	data = request.get_json()
+	data=request.get_json()
 
-	#validity check on the data using regular expressions
-	email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',data['email'])
-	password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
+
+	valid_email=re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',data['email'])
+	valid_password=re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
 	#if the data passes our validity check
-	if email and password:
+	if valid_email and valid_password:
 		user = User.query.filter_by(email=data['email']).first()
 
 		if not user:
@@ -73,15 +73,14 @@ def login_user():
 		else:
 
 			if check_password_hash(user.password, data['password']):
-				payload = {
+				payload={
 				           'exp':datetime.datetime.utcnow()+datetime.timedelta(hours=2),
 				           'iat':datetime.datetime.utcnow(),
 				           'sub':user.id }
 
-				token = jwt.encode(
-					               payload, 
-					               app.config['SECRET_KEY'], 
-					               algorithm='HS256') 
+				token=jwt.encode( payload, 
+					              app.config['SECRET_KEY'], 
+					              algorithm='HS256') 
 
 				return jsonify({'Message':'Logged in successfully',
 					            'Status':'Success',
