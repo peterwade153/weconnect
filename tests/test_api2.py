@@ -10,14 +10,14 @@ class WeconnectTestCase(unittest.TestCase):
 	""" weconnect business test case """
 
 	def setUp(self):
-		self.app = app.test_client()
-		app.testing = True
-		self.business_data = {
+		self.app=app.test_client()
+		app.testing=True
+		self.business_data={
 		                      'business_name':'rokoltd',
 		                      'category':'construction',
 		                      'location':'kampala'
 		                      }
-		self.review_data = {
+		self.review_data={
 		                    'review':'Great services and wonderful customer care'
 		                    }
 
@@ -28,20 +28,20 @@ class WeconnectTestCase(unittest.TestCase):
 			db.create_all()
 
 
-	def register_user(self, username = 'demo', email = 'demo@test.com', password = 'demo12345'):
+	def register_user(self, username='demo', email='demo@test.com', password='demo12345'):
 		""" func that registers a user """
-		user_data = {'username': username,
+		user_data={'username': username,
 		             'email': email,
 		             'password': password
 		            }
-		return self.app.post('/api/v2/auth/register', data = json.dumps(user_data), content_type = 'application/json')
+		return self.app.post('/api/v2/auth/register', data=json.dumps(user_data), content_type='application/json')
 
-	def login_user(self, email = 'demo@test.com', password = 'demo12345'):
+	def login_user(self, email='demo@test.com', password='demo12345'):
 		""" func that logs in user """
-		user_data = {'email': email,
+		user_data={'email': email,
 		             'password': password
 		             }
-		return self.app.post('/api/v2/auth/login', data = json.dumps(user_data), content_type = 'application/json')
+		return self.app.post('/api/v2/auth/login', data=json.dumps(user_data), content_type='application/json')
 
 
 	def test_business_registration(self):
@@ -49,19 +49,20 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		result = self.login_user()
-		token = json.loads(result.data.decode())['token']
-		reg = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data),
-		                                         headers = {'Content-Type':'application/json','Authorization':token})
+		token = json.loads(result.data.decode())['Token']
+		reg = self.app.post('/api/v2/businesses', data=json.dumps(self.business_data),
+		                                         headers={'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(reg.status_code, 201)
-		self.assertIn('registered successfully', str(reg.data))
+
+
 
 	def test_business_already_registered(self):
-		""" tests abusiness can be registered twice """
+		""" tests a business can be registered twice """
 
 		self.register_user()
 		res = self.login_user()
-		token = json.loads(res.data.decode())['token']
+		token = json.loads(res.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                        headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -78,7 +79,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		res = self.login_user()
-		token = json.loads(res.data.decode())['token']
+		token = json.loads(res.data.decode())['Token']
 		invalid_data = {'business_name':'@#$$ltd','location':'*&(empe','category':'*&^^)(ling'}
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(invalid_data), 
 			                                         headers = {'Content-Type':'application/json','Authorization':token})
@@ -91,7 +92,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		res = self.login_user()
-		token = json.loads(res.data.decode())['token']
+		token = json.loads(res.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                      headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -104,7 +105,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		res = self.login_user()
-		token = json.loads(res.data.decode())['token']
+		token = json.loads(res.data.decode())['Token']
 		reg = self.app.get('/api/v2/businesses', headers = {'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(reg.status_code, 404)
 
@@ -114,7 +115,7 @@ class WeconnectTestCase(unittest.TestCase):
 		""" tests a user can edit a registered business """
 		self.register_user()
 		result = self.login_user()
-		token = json.loads(result.data.decode())['token']
+		token = json.loads(result.data.decode())['Token']
 		reg = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -131,7 +132,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		result = self.login_user()
-		token = json.loads(result.data.decode())['token']
+		token = json.loads(result.data.decode())['Token']
 		new_business = {'new_name':'temboltd','location':'kawempe','category':'milling'}
 		res = self.app.put('/api/v2/businesses/1', data = json.dumps(new_business), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
@@ -145,7 +146,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		reg = self.login_user()
-		token = json.loads(reg.data.decode())['token']
+		token = json.loads(reg.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -159,7 +160,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		reg = self.login_user()
-		token = json.loads(reg.data.decode())['token']
+		token = json.loads(reg.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -175,7 +176,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		reg = self.login_user()
-		token = json.loads(reg.data.decode())['token']
+		token = json.loads(reg.data.decode())['Token']
 		result = self.app.post('/api/v2/businesses/1/reviews', data = json.dumps(self.review_data), 
 			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
 			                                                                                                    
@@ -188,7 +189,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		reg = self.login_user()
-		token = json.loads(reg.data.decode())['token']
+		token = json.loads(reg.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                    headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -206,7 +207,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		reg = self.login_user()
-		token = json.loads(reg.data.decode())['token']
+		token = json.loads(reg.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                    headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
@@ -225,17 +226,14 @@ class WeconnectTestCase(unittest.TestCase):
 
 		self.register_user()
 		reg = self.login_user()
-		token = json.loads(reg.data.decode())['token']
+		token = json.loads(reg.data.decode())['Token']
 		rev = self.app.post('/api/v2/businesses', data = json.dumps(self.business_data), 
 			                                    headers = {'Content-Type':'application/json','Authorization':token})
 			                                                                                        
 		self.assertEqual(rev.status_code, 201)
 		review = self.app.get('/api/v2/businesses/1/reviews', 
 			                                     headers = {'Content-Type':'application/json','Authorization':token}) 
-		self.assertEqual(review.status_code, 404)
-
-
-			                                                 
+		self.assertEqual(review.status_code, 404)                                                 
 
 
 if __name__ == '__main__':
