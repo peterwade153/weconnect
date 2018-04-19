@@ -7,6 +7,8 @@
 WeConnect provides a platform that brings businesses and individuals together. This platform 
 creates awareness for businesses and gives the users the ability to write reviews about the 
 businesses they have interacted with. 
+### Built with 
+Flask Micro-framework and uses Postgresql database
 
 ## Functions
  - User signup
@@ -54,8 +56,8 @@ To activate the environment
 <pre>
 $ source bin/activate
 </pre>
+Create a postges database myconnect
 <pre>
-Create a database myconnect
 
 $ export SECRET_KEY="to something secret"
 $ export APP_SETTINGS="config.DevelopmentConfig"
@@ -70,9 +72,9 @@ $ pip install -r requirements.txt
 </pre>
 To run migrations
 <pre>
-$ python manage.py init
-$ python manage.py migrate
-$ python manage.py upgrade
+$ python manage.py db init
+$ python manage.py db migrate
+$ python manage.py db upgrade
 </pre>
 
 ## To run application
