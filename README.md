@@ -10,7 +10,7 @@ businesses they have interacted with.
 ### Built with 
 Python3.5, Flask Micro-framework and uses Postgresql database
 
-## Functions
+### Functions
  - User signup
  - User login
  - User logout
@@ -44,7 +44,7 @@ GET     |  api/v2/businesses/id/reviews   |        Get reviews for a business
 
 ---
 
-## Create a virtual enviroment and activate it
+### Create a virtual enviroment and activate it
 <pre>
 $ python3 -m venv weconnect
 </pre>
@@ -56,7 +56,8 @@ To activate the environment
 <pre>
 $ source bin/activate
 </pre>
-Create a postges database named <pre> myconnect</pre>
+### Create database
+<pre>Create a postgres database named myconnect</pre>
 ### Environment Variables
 <pre>
 $ export SECRET_KEY="to something secret"
@@ -66,7 +67,7 @@ $ export DATABASE_URL="postgresql://your-username:your-password@localhost/myconn
 
 ---
 
-## Install requirements
+### Install requirements
 <pre>
 $ pip install -r requirements.txt
 </pre>
@@ -77,12 +78,12 @@ $ python manage.py db migrate
 $ python manage.py db upgrade
 </pre>
 
-## To run application
+### To run application
 <pre>
 $ python run.py
 </pre>
 
-## Usage
+### Usage
 
 To test the api using postman(chrome extension) with the url below
 
@@ -93,7 +94,7 @@ To view the api documentation use the link below
 $ https://peterweconnect.docs.apiary.io/
 
 ---
-## User interfaces
+### User interfaces
 
 To view the user interfaces click on the link below
 
