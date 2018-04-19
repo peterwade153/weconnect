@@ -56,7 +56,7 @@ To activate the environment
 <pre>
 $ source bin/activate
 </pre>
-Create a postges database myconnect
+Create a postges database named <pre> myconnect</pre>
 ### Environment Variables
 <pre>
 $ export SECRET_KEY="to something secret"
