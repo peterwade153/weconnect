@@ -58,7 +58,7 @@ $ source bin/activate
 </pre>
 ### Create database
 <pre>Create a postgres database named myconnect</pre>
-### Environment Variables
+### Environment variables
 <pre>
 $ export SECRET_KEY="to something secret"
 $ export APP_SETTINGS="config.DevelopmentConfig"
