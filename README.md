@@ -1,9 +1,8 @@
 [![Build Status](https://travis-ci.org/peterwade153/weconnect.svg?branch=challenge2)](https://travis-ci.org/peterwade153/weconnect)
 [![Coverage Status](https://coveralls.io/repos/github/peterwade153/weconnect/badge.svg?branch=master)](https://coveralls.io/github/peterwade153/weconnect?branch=master)
 # WeConnect-API
-
+---
 ## Description
-
 WeConnect provides a platform that brings businesses and individuals together. This platform 
 creates awareness for businesses and gives the users the ability to write reviews about the 
 businesses they have interacted with. 
@@ -43,7 +42,7 @@ GET     |  api/v2/businesses/id/reviews   |        Get reviews for a business
 
 
 ---
-
+## Installation
 ### Create a virtual enviroment and activate it
 <pre>
 $ python3 -m venv weconnect
@@ -64,9 +63,6 @@ $ export SECRET_KEY="to something secret"
 $ export APP_SETTINGS="config.DevelopmentConfig"
 $ export DATABASE_URL="postgresql://your-username:your-password@localhost/myconnect"
 </pre>
-
----
-
 ### Install requirements
 <pre>
 $ pip install -r requirements.txt
@@ -78,25 +74,24 @@ $ python manage.py db migrate
 $ python manage.py db upgrade
 </pre>
 
-### To run application
+---
+## To run application
 <pre>
 $ python run.py
 </pre>
 
-### Usage
-
 To test the api using postman(chrome extension) with the url below
 
-$ https://weconnect-my.herokuapp.com/
+ https://weconnect-my.herokuapp.com/
 
 To view the api documentation use the link below
 
-$ https://peterweconnect.docs.apiary.io/
+ https://peterweconnect.docs.apiary.io/
 
 ---
-### User interfaces
+## User interfaces
 
 To view the user interfaces click on the link below
 
-$ https://peterwade153.github.io/
+ https://peterwade153.github.io/
 
