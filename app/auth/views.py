@@ -23,15 +23,16 @@ def register_user():
 
 	data=request.get_json()
 
-	valid_name=re.match('^[A-Za-z0-9]{,100}$', data['username'])
-	valid_email=re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$', data['email'])
-	valid_password=re.match('^[A-Za-z0-9]{4,}$', data['password'])
+	valid_name = re.match('^[A-Za-z0-9]{,100}$', data['username'])
+	valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
+	                                                           data['email'])
+	valid_password = re.match('^[A-Za-z0-9]{4,150}$', data['password'])
 
 	#if the data passes our validity check
 	if valid_name and valid_email and valid_password:  
 
 		user = User.query.filter_by(email=data['email']).first()         
-		if not user:
+		if user is None:
 
 			new_user = User(username=data['username'],
 			                email=data['email'],
@@ -47,7 +48,8 @@ def register_user():
 
 	return jsonify(
 		{
-		  'Message':'All fields required, Valid Email and Password  atleast 4 characters!',
+		  'Message':'All fields required, Valid Email and Password'+  
+		                                  ' should atleast be 4 characters!',
 		  'Status': 'Failed'
 		}), 403
 
@@ -57,16 +59,23 @@ def login_user():
 	""" route logs in registered user """
 
 	data=request.get_json()
+	#check if all fields are filled in
+	if 'password' not in data.keys():
+		return jsonify(
+					{
+		'Message':'Password required',
+		'Success':'Failed'
+		}), 403
 
-
-	valid_email=re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',data['email'])
-	valid_password=re.match('^[A-Za-z0-9]{4,}$', data['password'])
+	valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
+		                                                     data['email'])
+	valid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
 	#if the data passes our validity check
 	if valid_email and valid_password:
 		user = User.query.filter_by(email=data['email']).first()
 
-		if not user:
+		if user is None:
 
 			return jsonify({'Message':'User not registered, please register!',
 				            'Status': 'Failed'}), 401
@@ -78,7 +87,7 @@ def login_user():
 				           'iat':datetime.datetime.utcnow(),
 				           'sub':user.id }
 
-				token=jwt.encode( payload, 
+				token = jwt.encode( payload, 
 					              app.config['SECRET_KEY'], 
 					              algorithm='HS256') 
 
