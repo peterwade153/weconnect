@@ -17,14 +17,15 @@ class AuthTestCase(unittest.TestCase):
 			db.drop_all()
 			db.create_all()
 
-	def register_user(self, username='demo', email='demo@test.com', password='demo12345'):
+	def register_user(self, username='demo', email='demo@test.com',
+		                                            password='demo12345'):
 		""" func that registers a user """
 		user_data={'username': username,
 		             'email': email,
 		             'password': password
 		            }
 		return self.app.post('/api/v2/auth/register', data=json.dumps(user_data), 
-			                                        content_type='application/json')
+			                                    content_type='application/json')
 
 	def login_user(self, email='demo@test.com', password='demo12345'):
 		""" func that logs in user """
@@ -32,7 +33,7 @@ class AuthTestCase(unittest.TestCase):
 		             'password': password
 		             }
 		return self.app.post('/api/v2/auth/login', data=json.dumps(user_data), 
-			                                         content_type='application/json')
+			                                   content_type='application/json')
 
 
 ## Test cases
@@ -55,7 +56,7 @@ class AuthTestCase(unittest.TestCase):
 	def tests_user_registering_with_invalid_data(self):
 		""" tests invalid data in not allowed """
 
-		users_data={'username':'#$@#emo', 'email': 'testet.com', 'password': '@##103'}
+		users_data={'username':'#$@#mo', 'email': 'teste.com', 'password': '@##103'}
 		reg = self.app.post('/api/v2/auth/register', data=json.dumps(users_data), 
 			                                        content_type='application/json')
 		self.assertEqual(reg.status_code, 403)
@@ -94,9 +95,9 @@ class AuthTestCase(unittest.TestCase):
 	def tests_user_logging_in_with_invalid_data(self):
 		""" tests invalid data in not allowed """
 
-		users_data={'username':'#$@#emo','email':'testte.com', 'password':'@##st13'}
+		users_data={'username':'#$@#3mo','email':'testte.com','password':'@##s13'}
 		reg = self.app.post('/api/v2/auth/login', data=json.dumps(users_data), 
-			                                          content_type='application/json')
+			                                      content_type='application/json')
 		self.assertEqual(reg.status_code, 403)
 
 
