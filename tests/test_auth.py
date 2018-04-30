@@ -24,16 +24,18 @@ class AuthTestCase(unittest.TestCase):
 		             'email': email,
 		             'password': password
 		            }
-		return self.app.post('/api/v2/auth/register', data=json.dumps(user_data), 
-			                                    content_type='application/json')
+		return self.app.post('/api/v2/auth/register', 
+			                            data=json.dumps(user_data), 
+			                               content_type='application/json')
 
 	def login_user(self, email='demo@test.com', password='demo12345'):
 		""" func that logs in user """
 		user_data={'email': email,
 		             'password': password
 		             }
-		return self.app.post('/api/v2/auth/login', data=json.dumps(user_data), 
-			                                   content_type='application/json')
+		return self.app.post('/api/v2/auth/login', 
+			                            data=json.dumps(user_data), 
+			                               content_type='application/json')
 
 
 ## Test cases
@@ -56,9 +58,11 @@ class AuthTestCase(unittest.TestCase):
 	def tests_user_registering_with_invalid_data(self):
 		""" tests invalid data in not allowed """
 
-		users_data={'username':'#$@#mo', 'email': 'teste.com', 'password': '@##103'}
-		reg = self.app.post('/api/v2/auth/register', data=json.dumps(users_data), 
-			                                        content_type='application/json')
+		users_data={'username':'#$@#mo', 'email': 'teste.com', 
+		                                      'password': '@##103'}
+		reg = self.app.post('/api/v2/auth/register', 
+			                                 data=json.dumps(users_data), 
+			                                  content_type='application/json')
 		self.assertEqual(reg.status_code, 403)
 
 
@@ -76,7 +80,7 @@ class AuthTestCase(unittest.TestCase):
 
 		user_data={'email': 'test@test.com', 'password': 'test1023'}
 		reg = self.app.post('/api/v2/auth/login', data=json.dumps(user_data), 
-			                                     content_type='application/json')
+			                                 content_type='application/json')
 		self.assertEqual(reg.status_code, 401)  #unauthorized access
 
 
@@ -88,16 +92,17 @@ class AuthTestCase(unittest.TestCase):
 
 		users_data={'email':'demo@test.com', 'password': 'test1023'}
 		reg = self.app.post('/api/v2/auth/login', data=json.dumps(users_data),
-		                                           content_type='application/json')
+		                                      content_type='application/json')
 		self.assertEqual(reg.status_code, 401)  #unauthorized access
 
 
 	def tests_user_logging_in_with_invalid_data(self):
 		""" tests invalid data in not allowed """
 
-		users_data={'username':'#$@#3mo','email':'testte.com','password':'@##s13'}
+		users_data={'username':'#$@#3mo','email':'testte.com',
+		                                'password':'@##s13'}
 		reg = self.app.post('/api/v2/auth/login', data=json.dumps(users_data), 
-			                                      content_type='application/json')
+			                                  content_type='application/json')
 		self.assertEqual(reg.status_code, 403)
 
 
@@ -111,7 +116,7 @@ class AuthTestCase(unittest.TestCase):
 		token = json.loads(rev.data.decode())['Token']
 
 		result = self.app.post('/api/v2/auth/logout', 
-			     headers={'Content-Type':'application/json','Authorization':token})
+			headers={'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(result.status_code, 200)
 
 	def tests_already_logged_out_user_attempting_logout(self):
@@ -124,11 +129,11 @@ class AuthTestCase(unittest.TestCase):
 		token = json.loads(rev.data.decode())['Token']
 
 		first_attempt = self.app.post('/api/v2/auth/logout', 
-			         headers={'Content-Type':'application/json','Authorization':token})
+			headers={'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(first_attempt.status_code, 200)
 
 		second_attempt = self.app.post('/api/v2/auth/logout', 
-			        headers={'Content-Type':'application/json','Authorization':token})
+			headers={'Content-Type':'application/json','Authorization':token})
 		self.assertEqual(second_attempt.status_code, 403)
 
 
@@ -142,8 +147,9 @@ class AuthTestCase(unittest.TestCase):
 		token = json.loads(rev.data.decode())['Token']
 
 		new_data = {'email': 'demo@test.com', 'new_password': 'tests1233'}
-		res = self.app.post('/api/v2/auth/reset-password', data=json.dumps(new_data), 
-			           headers={'Content-Type':'application/json','Authorization':token})
+		res = self.app.post('/api/v2/auth/reset-password', 
+			  data=json.dumps(new_data), 
+			 headers={'Content-Type':'application/json','Authorization':token})
 			                                                                                       
 		self.assertEqual(res.status_code, 200)
 
@@ -157,8 +163,9 @@ class AuthTestCase(unittest.TestCase):
 		token = json.loads(rev.data.decode())['Token']
 
 		new_data = {'email': 'test@test.com', 'new_password': 'tests1233'}
-		res = self.app.post('/api/v2/auth/reset-password', data=json.dumps(new_data), 
-			        headers={'Content-Type':'application/json','Authorization':token})
+		res = self.app.post('/api/v2/auth/reset-password', 
+			      data=json.dumps(new_data), 
+			 headers={'Content-Type':'application/json','Authorization':token})
 			                                                                                       
 		self.assertEqual(res.status_code, 403)
 
@@ -173,8 +180,9 @@ class AuthTestCase(unittest.TestCase):
 
 		new_data = {'email': '#$%test@test.com', 'new_password': '$%%tests1233'}
 
-		result = self.app.post('/api/v2/auth/reset-password', data=json.dumps(new_data), 
-			         headers={'Content-Type':'application/json','Authorization':token})
+		result = self.app.post('/api/v2/auth/reset-password', 
+			      data=json.dumps(new_data), 
+			  headers={'Content-Type':'application/json','Authorization':token})
 			                                                                                       
 		self.assertEqual(result.status_code, 403)
 
@@ -182,8 +190,9 @@ class AuthTestCase(unittest.TestCase):
 		""" tests only registered users can rest passwords """
 
 		new_data = {'email': 'test@test.com', 'new_password': 'tests1233'}
-		result = self.app.post('/api/v2/auth/reset-password', data=json.dumps(new_data), 
-			                                headers={'Content-Type':'application/json'})
+		result = self.app.post('/api/v2/auth/reset-password', 
+			             data=json.dumps(new_data), 
+			                       headers={'Content-Type':'application/json'})
 			                                                                                       
 		self.assertEqual(result.status_code, 403)
 

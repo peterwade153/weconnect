@@ -90,9 +90,8 @@ def reset_password(current_user):
 	valid_new_password = re.match('^[A-Za-z0-9]{4,}$', data['new_password'])
 
 	if valid_email and valid_new_password:
-
 		user = User.query.filter_by(email=data['email']).first()
-		if user:
+		if user is not None:
 			#check if its account owner requesting password reset
 			if user.id==current_user:   
 				user.password = generate_password_hash(data['new_password'],
@@ -166,7 +165,7 @@ def businesses(current_user):
 
 		def search_return(search_results):
 			""" returns response after search"""
-			if search_results is not None:
+			if search_results:
 				business_info=[business.business_object() 
 				                       for business in search_results]
 				return jsonify({'Status': 'Success',
@@ -177,8 +176,14 @@ def businesses(current_user):
 
 		if name:
 			search_results = Business.query.filter(
-				             Business.business_name.ilike('%'+name+'%'))
-			search_return(search_results)
+				             Business.business_name.ilike('%'+name+'%'), 
+				                                   Business.is_deleted==False)
+			if search_results is not None:
+				business_info=[business.business_object() 
+				                       for business in search_results]
+				return jsonify({'Status': 'Success',
+			                'Business':business_info}), 200 
+
 
 		if limit:
 			business_results = Business.query.paginate(page, limit, False)
@@ -195,13 +200,27 @@ def businesses(current_user):
 
 		if location:
 			search_results = Business.query.filter(
-				             Business.location.ilike('%'+location+'%'))
-			search_return(search_results)
+				             Business.location.ilike('%'+location+'%'),
+				                                 Business.is_deleted==False)
+			if search_results is not None:
+				business_info=[business.business_object() 
+				                       for business in search_results]
+				return jsonify({'Status': 'Success',
+			                'Business':business_info}), 200
+			return jsonify({'Status':'Failed',
+				            'Message':'No business found'}), 404
 
-		if category:
+
+		elif category:
 			search_results = Business.query.filter(
-				             Business.category.ilike('%'+category+'%'))
-			search_return(search_results)
+				             Business.category.ilike('%'+category+'%'),
+				                                  Business.is_deleted==False)
+			if search_results is not None:
+				business_info=[business.business_object() 
+				                       for business in search_results]
+				return jsonify({'Status': 'Success',
+			                'Business':business_info}), 200
+			
 
 		else:
 
@@ -276,8 +295,6 @@ def business(current_user, id):
 		return jsonify({'Status':'Failed',
 				            'Message':'No business found'}), 404
 
-		#return jsonify({'Status':'Failed',
-			            #'Message':'Only characters and digits are expected!'}), 403
 
 	elif request.method=='DELETE':
 		# delete business
@@ -337,7 +354,7 @@ def reviews(current_user, id):
 
 		if reviews:
 			author = User.query.filter_by(id = current_user).first()
-			business = Business.query.filter_by(id=id).first()
+			business = Business.get_business(id)
 
 			review_list=[]
 			for review in reviews:

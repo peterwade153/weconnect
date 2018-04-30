@@ -83,7 +83,8 @@ def login_user():
 
 			if check_password_hash(user.password, data['password']):
 				payload={
-				           'exp':datetime.datetime.utcnow()+datetime.timedelta(hours=2),
+				           'exp':datetime.datetime.utcnow()+
+				                datetime.timedelta(hours=2),
 				           'iat':datetime.datetime.utcnow(),
 				           'sub':user.id }
 
@@ -100,7 +101,7 @@ def login_user():
 
 	return jsonify(
 		{
-		'Message':'All fields are required,Valid Email and Password atleast 4 characters!',
+		'Message':'InValid Email or should be Password atleast 4 characters!',
 		'Success':'Failed'
 		}), 403
 
