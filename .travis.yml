@@ -26,7 +26,7 @@ env:
 
 
 script:
-  - nosetests --with-cov tests/
+  - nosetests --with-cov --cov tests/
 
 
 
