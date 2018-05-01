@@ -76,7 +76,11 @@ def logout():
 
 	return jsonify({'Message':'Authentication token required',
 		            'Status':'Failed'}), 403
+@app.route('/')
+def display_documentation():
+	""" route displays api documentation """
 
+	return render_template('index.html')
 
 
 @app.route('/api/v2/auth/reset-password', methods=['POST'])
