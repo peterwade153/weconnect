@@ -3,7 +3,7 @@ import os
 import re
 import jwt
 from functools import wraps
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from werkzeug.security import generate_password_hash
 from app import app
 from app.auth.views import auth
