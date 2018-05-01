@@ -6,10 +6,7 @@ Jinja2==2.10
 Mako==1.0.7
 MarkupSafe==1.0
 PyJWT==1.6.0
-<<<<<<< HEAD
-=======
 SQLAlchemy==1.2.5
->>>>>>> challenge3
 Werkzeug==0.14.1
 alembic==0.9.8
 click==6.7

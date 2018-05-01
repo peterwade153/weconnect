@@ -26,13 +26,10 @@ env:
 
 
 script:
-<<<<<<< HEAD
-  - pytest --cov api/v1/tests/
-=======
   - nosetests --with-cov --cov tests/
 
 
->>>>>>> challenge3
+
 
 after_success:
   - coverage report
