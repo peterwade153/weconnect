@@ -154,17 +154,6 @@ def businesses(current_user):
 		location=request.args.get('location', None)
 		category=request.args.get('category', None)
 
-		def search_return(search_results):
-			""" returns response after search"""
-			if search_results:
-				business_info=[business.business_object() 
-				                       for business in search_results]
-				return jsonify({'Status': 'Success',
-			                'Business':business_info}), 200 
-
-			return jsonify({'Status':'Failed',
-				            'Message':'No business found'}), 404
-
 		if name:
 			search_results = Business.query.filter(
 				             Business.business_name.ilike('%'+name+'%'), 
@@ -173,7 +162,7 @@ def businesses(current_user):
 				business_info=[business.business_object() 
 				                       for business in search_results]
 				return jsonify({'Status': 'Success',
-			                'Business':business_info}), 200 
+			                'Business':business_info}), 200
 
 
 		elif limit:
@@ -220,7 +209,7 @@ def businesses(current_user):
 				                'Business':[]}), 404
 
 			business_list=[business.business_object() 
-				                     for business in isbusinesses]
+				                     for business in businesses]
 
 			return jsonify({'Status':'Success',
 				            'Businesses': business_list}), 200
