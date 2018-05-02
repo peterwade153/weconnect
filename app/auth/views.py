@@ -12,98 +12,86 @@ from app.models import db, User
 
 auth = Blueprint('auth', __name__)
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
-app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI']=os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 
 @app.route('/api/v2/auth/register', methods=['POST'])
 def register_user():
 	""" route registers a user """
 
-	data=request.get_json()
+	data = request.get_json()
 
-	valid_name = re.match('^[A-Za-z0-9]{,100}$', data['username'])
-	valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
+	isvalid_name = re.match('^[A-Za-z0-9]{,100}$', data['username'])
+	isvalid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
 	                                                           data['email'])
-	valid_password = re.match('^[A-Za-z0-9]{4,150}$', data['password'])
+	isvalid_password = re.match('^[A-Za-z0-9]{4,150}$', data['password'])
 
-	#if the data passes our validity check
-	if valid_name and valid_email and valid_password:  
+	#check if data passes the validity check
+	if not isvalid_name and not isvalid_email and not isvalid_password:
+		return jsonify({ 'Message':'All fields required, Valid Email and'+ 
+			                    'Password should atleast be 4 characters!',
+		                 'Status': 'Failed'}), 403
 
-		user = User.query.filter_by(email=data['email']).first()         
-		if user is None:
-
-			new_user = User(username=data['username'],
-			                email=data['email'],
-			                password=data['password'])
-			db.session.add(new_user)
-			db.session.commit()
-			return jsonify({'Message':'Successfully registered',
-			                'Status': 'Success'
-			                }), 201
-
+	user = User.query.filter_by(email=data['email']).first()         
+	if user is not None:
 		return jsonify({'Message':'User already registered, Login',
 			            'Status': 'Failed'}), 202
 
-	return jsonify(
-		{
-		  'Message':'All fields required, Valid Email and Password'+  
-		                                  ' should atleast be 4 characters!',
-		  'Status': 'Failed'
-		}), 403
+	new_user = User(username=data['username'],
+		            email=data['email'],
+		            password=data['password'])
+	db.session.add(new_user)
+	db.session.commit()
+	return jsonify({'Message':'Successfully registered',
+			        'Status': 'Success'}), 201
 
 
 @app.route('/api/v2/auth/login', methods=['POST'])
 def login_user():
 	""" route logs in registered user """
 
-	data=request.get_json()
+	data = request.get_json()
 	#check if all fields are filled in
 	if 'password' not in data.keys():
-		return jsonify(
-					{
-		'Message':'Password required',
-		'Success':'Failed'
-		}), 403
+		return jsonify({'Message':'Password required',
+		                'Success':'Failed' }), 403
 
-	valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
+	isvalid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
 		                                                     data['email'])
-	valid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
+	isvalid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
 	#if the data passes our validity check
-	if valid_email and valid_password:
-		user = User.query.filter_by(email=data['email']).first()
+	if not isvalid_email and not isvalid_password:
+		return jsonify({
+		'Message':'Invalid Email or Password should be atleast 4 characters!',
+		'Success':'Failed'}), 403
 
-		if user is None:
+	user = User.query.filter_by(email=data['email']).first()
+	if user is None:
+		return jsonify({'Message':'User not registered, please register!',
+				        'Status': 'Failed'}), 401
 
-			return jsonify({'Message':'User not registered, please register!',
-				            'Status': 'Failed'}), 401
-		else:
-
-			if check_password_hash(user.password, data['password']):
-				payload={
-				           'exp':datetime.datetime.utcnow()+
-				                datetime.timedelta(hours=2),
-				           'iat':datetime.datetime.utcnow(),
-				           'sub':user.id }
-
-				token = jwt.encode( payload, 
-					              app.config['SECRET_KEY'], 
-					              algorithm='HS256') 
-
-				return jsonify({'Message':'Logged in successfully',
-					            'Status':'Success',
-					            'Token':token.decode('UTF-8')}),200
-
-			return jsonify({'Message':'An error occured,please try again!',
+	if not check_password_hash(user.password, data['password']):
+		return jsonify({'Message':'An error occured,please try again!',
 				            'Status':'Failed'}), 401
+	#if password matches, then generate token for the user	
+	payload = {
+	           'exp':datetime.datetime.utcnow()+ datetime.timedelta(hours=2),
+	           'iat':datetime.datetime.utcnow(),
+	           'sub':user.id }
+	token = jwt.encode( payload,
+		              app.config['SECRET_KEY'],
+		              algorithm='HS256')
 
-	return jsonify(
-		{
-		'Message':'InValid Email or should be Password atleast 4 characters!',
-		'Success':'Failed'
-		}), 403
+	return jsonify({'Message':'Logged in successfully',
+				    'Status':'Success',
+				    'Token':token.decode('UTF-8')}),200
+
+
+
+
 
 
 

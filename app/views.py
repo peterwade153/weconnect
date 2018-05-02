@@ -3,7 +3,7 @@ import os
 import re
 import jwt
 from functools import wraps
-from flask import jsonify, request, render_template
+from flask import jsonify, request
 from werkzeug.security import generate_password_hash
 from app import app
 from app.auth.views import auth
@@ -32,14 +32,14 @@ def token_required(f):
 			return jsonify({'Message':'Token is missing!'}), 403
 
 		#check if token is blacklisted
-		blacklisted_token = BlacklistToken.query.filter_by(token=token).first()
+		expired_token = BlacklistToken.query.filter_by(token=token).first()
 
-		if blacklisted_token:
+		if expired_token:
 			return jsonify({'Message':'Expired token, Login again'}), 403
 
 		try:
 			payload = jwt.decode(token, app.config['SECRET_KEY'])
-			current_user=payload['sub']
+			current_user = payload['sub']
 
 		except jwt.ExpiredSignatureError:
 			return jsonify ({'Message':'Expired token!'}), 403
@@ -52,35 +52,28 @@ def token_required(f):
 	return decorate
 
 
-
 @app.route('/api/v2/auth/logout', methods=['POST'])
 def logout():
 	""" route logs out a logged in user """
 
-	if 'Authorization' in request.headers:
-		token = request.headers['Authorization']
+	if 'Authorization' not in request.headers:
 
-		blacklisted_token = BlacklistToken.query.filter_by(token=token).first()
+		return jsonify({'Message':'Authentication token required',
+		                'Status':'Failed'}), 403
 
-		if blacklisted_token is not None :
-			return jsonify({'Message':'Logged out already',
-			                'Status':'Failed'}), 403
+	token = request.headers['Authorization']
 
-		else:
+	expired_token = BlacklistToken.query.filter_by(token=token).first()
 
-			blacklist_token = BlacklistToken(token=token)
-			db.session.add(blacklist_token)
-			db.session.commit()
-			return jsonify({'Message':'Logged out successfully',
-			            'Status':'Success'}), 200
+	if expired_token is not None :
+		return jsonify({'Message':'Logged out already',
+			            'Status':'Failed'}), 403
 
-	return jsonify({'Message':'Authentication token required',
-		            'Status':'Failed'}), 403
-@app.route('/')
-def display_documentation():
-	""" route displays api documentation """
-
-	return render_template('index.html')
+	new_expired_token = BlacklistToken(token=token)
+	db.session.add(new_expired_token)
+	db.session.commit()
+	return jsonify({'Message':'Logged out successfully',
+			        'Status':'Success'}), 200
 
 
 @app.route('/api/v2/auth/reset-password', methods=['POST'])
@@ -88,34 +81,31 @@ def display_documentation():
 def reset_password(current_user):
 	""" route enables user reset-password """
 
-	data=request.get_json()
+	data = request.get_json()
 
-	valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]+$',
+	isvalid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]+$',
 		                                                      data['email'])
-	valid_new_password = re.match('^[A-Za-z0-9]{4,}$', data['new_password'])
+	isvalid_new_password = re.match('^[A-Za-z0-9]{4,}$', data['new_password'])
 
-	if valid_email and valid_new_password:
-		user = User.query.filter_by(email=data['email']).first()
-		if user is not None:
-			#check if its account owner requesting password reset
-			if user.id==current_user:   
-				user.password = generate_password_hash(data['new_password'],
-				                                           method='sha256')
-				db.session.commit()
-				return jsonify({'Message':'Password reset successfully',
-				                'Status':'Success'}), 200
+	if not isvalid_email and not isvalid_new_password:
+		return jsonify({
+		'Message':'Fill all fields, Valid Email and Password atleast 4 characters!',
+		'Status': False	}), 403
 
-			return jsonify({'Message':'Action failed',
-				            'Status':'Failed'}), 403
-
+	#check if user exists
+	user = User.query.filter_by(email=data['email']).first()
+	if user is None:
 		return jsonify({'Message':'An error occurred, check and try again!',
 			            'Status':'Failed'}), 403
+	#check if its account owner requesting password reset
+	if user.id != current_user:
+		return jsonify({'Message':'Action failed',
+				        'Status':'Failed'}), 403
+	user.password = generate_password_hash(data['new_password'],method='sha256')
+	db.session.commit()
+	return jsonify({'Message':'Password reset successfully',
+				    'Status':'Success'}), 200
 
-	return jsonify(
-		{
-		'Message':'Fill all fields, Valid Email and Password atleast 4 characters!',
-		'Status': False
-		}), 403
 
 
 @app.route('/api/v2/businesses' , methods=['POST','GET'])
@@ -123,44 +113,40 @@ def reset_password(current_user):
 def businesses(current_user):
 	""" route allows user register a business and view all registered businesses """
 
-	if request.method=='POST':
+	if request.method == 'POST':
 		''' registering new business '''
-		data=request.get_json()
+		data = request.get_json()
 
-		valid_biz_name = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+		isvalid_name = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
 			                                 data['business_name'])
-		valid_category = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+		isvalid_category = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
 			                                  data['category'])
-		valid_location = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$',
+		isvalid_location = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$',
 		                                      data['location'])
 
-		if valid_biz_name and valid_category and valid_location:
+		if not isvalid_name and not isvalid_category and not isvalid_location:
+			return jsonify({'Message':'Only characters and digits are expected!',
+			                'Status':'Failed'}), 403
 
-			biz = Business.query.filter_by(business_name=
+		biz = Business.query.filter_by(business_name=
 				                               data['business_name']).first()
 
-			if biz is None:
-				new_biz = Business(business_name=data['business_name'],
-				                   category=data['category'],
-				                   location=data['location'],
-				                   user_id=current_user)
-				db.session.add(new_biz)
-				db.session.commit()
-				return jsonify(
-					{
-					'Message':data['business_name'].upper() +
-					                       ' Registered Successfully',
-					'Status':'Success'
-					}), 201
-
-			# business registered already
+		if biz is not None:
 			return jsonify({'Message':'Business registered already',
 				            'Status':'Failed'}), 202
 
-		return jsonify({'Message':'Only characters and digits are expected!',
-			            'Status':'Failed'}), 403
+		new_biz = Business(business_name=data['business_name'],
+				           category=data['category'],
+				           location=data['location'],
+				           user_id=current_user)
+		db.session.add(new_biz)
+		db.session.commit()
+		return jsonify({
+		   'Message':data['business_name'].upper()+'Registered Successfully',
+	       'Status':'Success'}), 201
 
-	elif request.method =='GET':
+
+	elif request.method == 'GET':
 
 		name=request.args.get('q', None)
 		limit=request.args.get('limit', None, type = int)
@@ -190,7 +176,7 @@ def businesses(current_user):
 			                'Business':business_info}), 200 
 
 
-		if limit:
+		elif limit:
 			business_results = Business.query.paginate(page, limit, False)
 			response={
 			     'Businesses':[i.business_object() 
@@ -203,7 +189,7 @@ def businesses(current_user):
 
 			return jsonify(response), 200
 
-		if location:
+		elif location:
 			search_results = Business.query.filter(
 				             Business.location.ilike('%'+location+'%'),
 				                                 Business.is_deleted==False)
@@ -224,22 +210,20 @@ def businesses(current_user):
 				business_info=[business.business_object() 
 				                       for business in search_results]
 				return jsonify({'Status': 'Success',
-			                'Business':business_info}), 200
-			
+			                'Business':business_info}), 200			
 
 		else:
-
-			isbusinesses= Business.get_businesses()
-			if isbusinesses:
-				business_list=[business.business_object() 
-				                     for business in isbusinesses]
-
-				return jsonify({'Status':'Success',
-				                'Businesses': business_list}), 200
-
-			else:
+			businesses= Business.get_businesses()
+			#no businesses registered
+			if not businesses:
 				return jsonify({'Status':'Success',
 				                'Business':[]}), 404
+
+			business_list=[business.business_object() 
+				                     for business in isbusinesses]
+
+			return jsonify({'Status':'Success',
+				            'Businesses': business_list}), 200
 
 
 @app.route('/api/v2/businesses/<id>', methods=['GET','PUT','DELETE'])
@@ -247,138 +231,133 @@ def businesses(current_user):
 def business(current_user, id):
 	""" route allows user to get, update and delete a business """
 
-	if request.method=='GET':
+	if request.method == 'GET':
 		''' allows user view a business '''
 		business = Business.get_business(id)
 
-		if business is not None:
-			business_info=business.business_object()
-
-			return jsonify({'Status':'Success',
-			                'Business': business_info}), 200
-
-		return jsonify({'Status':'Failed',
-			            'Message':'No business found'}), 404
-
-	if request.method=='PUT':
-		''' method only allows business owner to edit it '''
-
-		data=request.get_json()
-		business = Business.get_business(id)
-		if business:
-			if 'business_name' in data.keys():
-				isvalid_name=re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
-					                                  data['business_name'])
-				if not isvalid_name:
-					return jsonify({'Status':'Failed',
-		                   'Message':'characters or digits expected!'}), 403
-				business.business_name=data['business_name']
-			if 'category' in data.keys():
-				isvalid_category=re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
-					                                        data['category'])
-				if not isvalid_category:
-					return jsonify({'Status':'Failed',
-		                    'Message':'characters or digits expected!'}), 403
-				business.category=data['category']
-			elif 'location' in data.keys():
-				isvalid_location=re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
-					                                         data['location'])
-				if not isvalid_location:
-					return jsonify({'Status':'Failed',
-		                     'Message':'characters or digits expected!'}), 403
-				business.location=data['location']
-
-			if business.user_id==current_user:
-				db.session.commit()
-
-				return jsonify({'Status':'Success',
-				              'Message':'Business Updated successfully'}), 200
+		if business is None:
 
 			return jsonify({'Status':'Failed',
-					            'Message':'You are not permitted'}), 403
+			            'Message':'No business found'}), 404
 
-		return jsonify({'Status':'Failed',
+		business_info=business.business_object()
+
+		return jsonify({'Status':'Success',
+			            'Business': business_info}), 200
+
+
+
+	if request.method == 'PUT':
+		''' method only allows business owner to edit it '''
+		data = request.get_json()
+		business = Business.get_business(id)
+		if not business:
+			return jsonify({'Status':'Failed',
 				            'Message':'No business found'}), 404
 
+		if 'business_name' in data.keys():
+			isvalid_name = e.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+					                                  data['business_name'])
+			if not isvalid_name:
+				return jsonify({'Status':'Failed',
+		                   'Message':'characters or digits expected!'}), 403
+			business.business_name = data['business_name']
+		if 'category' in data.keys():
+			isvalid_category = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+					                                        data['category'])
+			if not isvalid_category:
+				return jsonify({'Status':'Failed',
+		                    'Message':'characters or digits expected!'}), 403
+			business.category = data['category']
+		elif 'location' in data.keys():
+			isvalid_location = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+					                                         data['location'])
+			if not isvalid_location:
+				return jsonify({'Status':'Failed',
+		                     'Message':'characters or digits expected!'}), 403
+			business.location = data['location']
 
-	elif request.method=='DELETE':
-		# delete business
+		if business.user_id != current_user:
+			return jsonify({'Status':'Failed',
+				            'Message':'You are not permitted'}), 403
+		#save new business details
+		db.session.commit()
+		return jsonify({'Status':'Success',
+				        'Message':'Business Updated successfully'}), 200
+
+
+
+	elif request.method == 'DELETE':
+		""" deletes a business """
 
 		business = Business.get_business(id)
 
 		if business is None:
 			return jsonify({'Status':'Failed',
 			                'Message': 'No business found!'}), 404
-		else:
-			if business.user_id==current_user:
-				business.is_deleted = True
-				db.session.commit()
 
-				return jsonify({'Status':'Success',
-					            'Message':'Business deleted successfully'}), 200
+		if business.user_id != current_user:
 
 			return jsonify({'Status': 'Failed',
 				            'Message':'You are not permitted'}), 403
+		business.is_deleted = True
+		db.session.commit()
 
-		
+		return jsonify({'Status':'Success',
+					    'Message':'Business deleted successfully'}), 200
+
 
 @app.route('/api/v2/businesses/<id>/reviews', methods=['POST','GET'])
 @token_required
 def reviews(current_user, id):
 	""" route allows user review a a business """
 
-	if request.method=='POST':
+	if request.method == 'POST':
 		''' Reviewing a business '''
 		data = request.get_json()
 
-		valid_review=re.match('^[A-Za-z]+[A-Za-z0-9 ]{,200}$',data['review'])
+		isvalid_review = re.match('^[A-Za-z]+[A-Za-z0-9 ]{,200}$',data['review'])
 
 		#if the data passes our validity check
-		if valid_review:
+		if not isvalid_review:
+			return jsonify({'Status':'Failed',
+			  'Message':'Only characters and not beyond 200 charaters!'}), 403
 
-			business = Business.get_business(id)
-			if business is None:
+		business = Business.get_business(id)
+		if business is None:
+			return jsonify({'Status':'Failed',
+				            'Message':'Business not registered here!'}), 404
 
-				return jsonify({'Status':'Failed',
-				              'Message':'Business not registered here!'}), 404
-
-			else:
-				new_review = Review( review=data['review'],business_id=id)
-				db.session.add(new_review)
-				db.session.commit()
-				return jsonify({'Status':'Success',
+		new_review = Review( review=data['review'],business_id=id)
+		db.session.add(new_review)
+		db.session.commit()
+		return jsonify({'Status':'Success',
 					     'Message':'Review has been successfully added!'}), 201
 
-		return jsonify({'Status':'Failed',
-			   'Message':'Only characters and not beyond 200 charaters!'}), 403
 
 
-	elif request.method=='GET':
+	elif request.method == 'GET':
 		''' Get request '''
 		reviews = Review.query.filter_by(business_id=id).all()
 
-		if reviews:
-			author = User.query.filter_by(id = current_user).first()
-			business = Business.get_business(id)
-
-			review_list=[]
-			for review in reviews:
-				review_info={}
-				review_info['review']=review.review
-				review_info['business_name']=business.business_name
-				review_info['reviewed_on']=review.reviewed_on
-				review_info['review_author']=author.username
-
-				review_list.append(review_info)
-
-			return jsonify({'Status':'Success',
-					        'Review': review_list}), 200
-
-		else:
+		if not reviews:
 			return jsonify({'Status':'Failed',
 			                'Message':'No reviews found!'}), 404
+		author = User.query.filter_by(id = current_user).first()
+		business = Business.get_business(id)
 
+		review_list=[]
+		for review in reviews:
+			review_info={}
+			review_info['review']=review.review
+			review_info['business_name']=business.business_name
+			review_info['reviewed_on']=review.reviewed_on
+			review_info['review_author']=author.username
 
+			review_list.append(review_info)
+
+		return jsonify({'Status':'Success',
+				        'Review': review_list}), 200
 
 
 
