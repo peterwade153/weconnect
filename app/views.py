@@ -7,7 +7,7 @@ from flask import jsonify, request
 from werkzeug.security import generate_password_hash
 from app import app
 from app.auth.views import auth
-from app.models import db, User, Business, Review, BlacklistToken
+from app.models import db, User, Business, Review, ExpiredToken
 
 
 
@@ -32,7 +32,7 @@ def token_required(f):
 			return jsonify({'Message':'Token is missing!'}), 403
 
 		#check if token is blacklisted
-		expired_token = BlacklistToken.query.filter_by(token=token).first()
+		expired_token = ExpiredToken.query.filter_by(token=token).first()
 
 		if expired_token:
 			return jsonify({'Message':'Expired token, Login again'}), 403
@@ -63,13 +63,13 @@ def logout():
 
 	token = request.headers['Authorization']
 
-	expired_token = BlacklistToken.query.filter_by(token=token).first()
+	expired_token = ExpiredToken.query.filter_by(token=token).first()
 
 	if expired_token is not None :
 		return jsonify({'Message':'Logged out already',
 			            'Status':'Failed'}), 403
 
-	new_expired_token = BlacklistToken(token=token)
+	new_expired_token = ExpiredToken(token=token)
 	db.session.add(new_expired_token)
 	db.session.commit()
 	return jsonify({'Message':'Logged out successfully',

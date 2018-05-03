@@ -55,13 +55,13 @@ class Business(db.Model):
 
 	def get_businesses():
 		""" returns businesses """
-		isbiz = Business.query.filter_by(is_deleted=False).all()
-		return isbiz
+		businesses = Business.query.filter_by(is_deleted=False).all()
+		return businesses
 
 	def get_business(id):
 		""" return business by id """
-		isbiz = Business.query.filter_by(id=id, is_deleted=False).first()
-		return isbiz
+		business = Business.query.filter_by(id=id, is_deleted=False).first()
+		return business
 
 
 
@@ -99,16 +99,16 @@ class Review(db.Model):
 
 
 
-class BlacklistToken(db.Model):
+class ExpiredToken(db.Model):
 	""" model for blacklisted tokens"""
 
-	__tablename__='blacklist_tokens'
+	__tablename__='expired_tokens'
 	id = db.Column(db.Integer, primary_key=True)
 	token = db.Column(db.String(200), unique=True, nullable=False)
-	blacklisted_on = db.Column(db.DateTime)
+	expired_on = db.Column(db.DateTime)
 
 	def __init__(self, token):
 		self.token=token
-		self.blacklisted_on=datetime.datetime.now()
+		self.expired_on=datetime.datetime.now()
 
 
