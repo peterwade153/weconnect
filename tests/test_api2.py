@@ -119,7 +119,7 @@ class WeconnectTestCase(unittest.TestCase):
 		token = json.loads(res.data.decode())['Token']
 		reg = self.app.get('/api/v2/businesses', 
 			headers={'Content-Type':'application/json', 'Authorization':token})
-		self.assertEqual(reg.status_code, 404)
+		self.assertEqual(reg.status_code, 200)
 
 			                                                                                        
 
@@ -194,7 +194,6 @@ class WeconnectTestCase(unittest.TestCase):
 		res = self.app.delete('/api/v2/businesses/1', 
 			headers={'Content-Type':'application/json', 'Authorization':token})
 		self.assertEqual(res.status_code, 404) 
-
 
 
 	def test_adding_review(self):
@@ -280,7 +279,7 @@ class WeconnectTestCase(unittest.TestCase):
 		self.assertEqual(rev.status_code, 201)
 		review = self.app.get('/api/v2/businesses/1/reviews', 
 			 headers={'Content-Type':'application/json', 'Authorization':token}) 
-		self.assertEqual(review.status_code, 404)                                                 
+		self.assertEqual(review.status_code, 200)                                                 
 
 
 if __name__ == '__main__':
