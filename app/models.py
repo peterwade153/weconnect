@@ -17,9 +17,9 @@ class User(db.Model):
 	created_on = db.Column(db.DateTime, default=datetime.datetime.now)
 
 	def __init__(self, username, email, password):
-		self.username=username
-		self.email=email
-		self.password=generate_password_hash(password, method='sha256')
+		self.username = username
+		self.email = email
+		self.password = generate_password_hash(password, method='sha256')
 
 
 	def __repr__(self):
@@ -43,10 +43,10 @@ class Business(db.Model):
 	is_deleted = db.Column(db.Boolean, default=False)
 
 	def __init__(self, business_name, category, location, user_id):
-		self.business_name=business_name
-		self.category=category
-		self.location=location
-		self.user_id=user_id
+		self.business_name = business_name
+		self.category = category
+		self.location = location
+		self.user_id = user_id
 
 	def save(self):
 		"""saves the business"""
@@ -62,8 +62,6 @@ class Business(db.Model):
 		""" return business by id """
 		business = Business.query.filter_by(id=id, is_deleted=False).first()
 		return business
-
-
 
 	def business_object(self):
 		""" retuns business """
@@ -89,8 +87,8 @@ class Review(db.Model):
 
 
 	def __init__(self, review, business_id):
-		self.review=review
-		self.business_id=business_id
+		self.review = review
+		self.business_id = business_id
 
 	def save(self):
 		"""save the reviews"""
@@ -108,7 +106,7 @@ class ExpiredToken(db.Model):
 	expired_on = db.Column(db.DateTime)
 
 	def __init__(self, token):
-		self.token=token
-		self.expired_on=datetime.datetime.now()
+		self.token = token
+		self.expired_on = datetime.datetime.now()
 
 

@@ -23,16 +23,16 @@ def register_user():
 
 	data = request.get_json()
 
-	isvalid_name = re.match('^[A-Za-z0-9]{,100}$', data['username'])
-	isvalid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
+	is_valid_name = re.match('^[A-Za-z0-9]{,100}$', data['username'])
+	is_valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
 	                                                           data['email'])
-	isvalid_password = re.match('^[A-Za-z0-9]{4,150}$', data['password'])
+	is_valid_password = re.match('^[A-Za-z0-9]{4,150}$', data['password'])
 
 	#check if data passes the validity check
-	if not isvalid_name and not isvalid_email and not isvalid_password:
-		return jsonify({ 'Message':'All fields required, Valid Email and'+ 
-			                    'Password should atleast be 4 characters!',
-		                 'Status': 'Failed'}), 403
+	if not is_valid_name and not is_valid_email and not is_valid_password:
+		return jsonify({'Message':'All fields required, valid email and'+ 
+		'Password should atleast be 4 characters!',
+		                'Status': 'Failed'}), 403
 
 	user = User.query.filter_by(email=data['email']).first()         
 	if user is not None:
@@ -56,14 +56,14 @@ def login_user():
 	#check if all fields are filled in
 	if 'password' not in data.keys():
 		return jsonify({'Message':'Password required',
-		                'Success':'Failed' }), 403
+		                'Success':'Failed'}), 403
 
-	isvalid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
+	is_valid_email = re.match('^[A-Za-z0-9.]+@[A-Za-z0-9]+\.[A-Za-z0-9.]{,100}$',
 		                                                     data['email'])
-	isvalid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
+	is_valid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
 	#if the data passes our validity check
-	if not isvalid_email and not isvalid_password:
+	if not is_valid_email and not is_valid_password:
 		return jsonify({
 		'Message':'Invalid Email or Password should be atleast 4 characters!',
 		'Success':'Failed'}), 403
@@ -75,24 +75,15 @@ def login_user():
 
 	if not check_password_hash(user.password, data['password']):
 		return jsonify({'Message':'An error occured,please try again!',
-				            'Status':'Failed'}), 401
+				        'Status':'Failed'}), 401
 	#if password matches, then generate token for the user	
-	payload = {
-	           'exp':datetime.datetime.utcnow()+ datetime.timedelta(hours=2),
+	payload = {'exp':datetime.datetime.utcnow()+ datetime.timedelta(hours=2),
 	           'iat':datetime.datetime.utcnow(),
-	           'sub':user.id }
+	           'sub':user.id}
 	token = jwt.encode( payload,
 		              app.config['SECRET_KEY'],
 		              algorithm='HS256')
 
 	return jsonify({'Message':'Logged in successfully',
 				    'Status':'Success',
-				    'Token':token.decode('UTF-8')}),200
-
-
-
-
-
-
-
-
+				    'Token':token.decode('UTF-8')}), 200
