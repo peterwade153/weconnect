@@ -56,7 +56,8 @@ To activate the environment
 $ source bin/activate
 </pre>
 ### Create database
-<pre>Create a postgres database named myconnect</pre>
+Create a postgres database named myconnect
+<pre>createdb -U postgres myconnect</pre>
 ### Environment variables
 <pre>
 $ export SECRET_KEY="to something secret"
