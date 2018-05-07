@@ -32,12 +32,12 @@ def register_user():
 	if not is_valid_name and not is_valid_email and not is_valid_password:
 		return jsonify({'Message':'All fields required, valid email and'+ 
 		'Password should atleast be 4 characters!',
-		                'Status': 'Failed'}), 403
+		                'Status':'Failed'}), 403
 
 	user = User.query.filter_by(email=data['email']).first()         
 	if user is not None:
 		return jsonify({'Message':'User already registered, Login',
-			            'Status': 'Failed'}), 202
+			            'Status':'Failed'}), 202
 
 	new_user = User(username=data['username'],
 		            email=data['email'],
@@ -45,8 +45,7 @@ def register_user():
 	db.session.add(new_user)
 	db.session.commit()
 	return jsonify({'Message':'Successfully registered',
-			        'Status': 'Success'}), 201
-
+			        'Status':'Success'}), 201
 
 @app.route('/api/v2/auth/login', methods=['POST'])
 def login_user():
@@ -71,7 +70,7 @@ def login_user():
 	user = User.query.filter_by(email=data['email']).first()
 	if user is None:
 		return jsonify({'Message':'User not registered, please register!',
-				        'Status': 'Failed'}), 401
+				        'Status':'Failed'}), 401
 
 	if not check_password_hash(user.password, data['password']):
 		return jsonify({'Message':'An error occured,please try again!',

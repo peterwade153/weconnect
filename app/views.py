@@ -89,7 +89,7 @@ def reset_password(current_user):
 	if not is_valid_email and not is_valid_new_password:
 		return jsonify({
 		'Message':'Invalid Email or Password should atleast be 4 characters!',
-		'Status': False}), 403
+		'Status':False}), 403
 
 	#check if user exists
 	user = User.query.filter_by(email=data['email']).first()
@@ -101,7 +101,7 @@ def reset_password(current_user):
 		return jsonify({'Message':'Action failed',
 				        'Status':'Failed'}), 403
 
-	user.password = generate_password_hash(data['new_password'],method='sha256')
+	user.password = generate_password_hash(data['new_password'], method='sha256')
 	db.session.commit()
 	return jsonify({'Message':'Password reset successfully',
 				    'Status':'Success'}), 200
@@ -170,10 +170,10 @@ def businesses(current_user):
 			response = {
 			     'Businesses':[i.business_object() 
 			                             for i in business_results.items],
-			     'pages':business_query.pages,
-			     'next':business_query.next_num,
-			     'current':business_query.page,
-			     'prev':business_query.prev_num
+			     'pages':business_results.pages,
+			     'next':business_results.next_num,
+			     'current':business_results.page,
+			     'prev':business_results.prev_num
 			}
 
 			return jsonify(response), 200
@@ -185,7 +185,7 @@ def businesses(current_user):
 			if search_results is not None:
 				business_info = [business.business_object() 
 				                       for business in search_results]
-				return jsonify({'Status': 'Success',
+				return jsonify({'Status':'Success',
 			                'Business':business_info}), 200
 
 		elif category is not None:
@@ -195,7 +195,7 @@ def businesses(current_user):
 			if search_results is not None:
 				business_info = [business.business_object() 
 				                       for business in search_results]
-				return jsonify({'Status': 'Success',
+				return jsonify({'Status':'Success',
 			                'Business':business_info}), 200			
 
 		else:
@@ -276,10 +276,10 @@ def business(current_user, id):
 
 		if business is None:
 			return jsonify({'Status':'Failed',
-			                'Message': 'No business found!'}), 404
+			                'Message':'No business found!'}), 404
 
 		if business.user_id != current_user:
-			return jsonify({'Status': 'Failed',
+			return jsonify({'Status':'Failed',
 				            'Message':'You are not permitted'}), 403
 		business.is_deleted = True
 		db.session.commit()
@@ -315,7 +315,7 @@ def reviews(current_user, id):
 		db.session.commit()
 		return jsonify({'Status':'Success',
 					     'Message':'Review has been successfully added!'}), 201
-
+						 
 	elif request.method == 'GET':
 		''' Get request '''
 		reviews = Review.query.filter_by(business_id=id).all()
@@ -333,4 +333,4 @@ def reviews(current_user, id):
 			review_list.append(review_info)
 
 		return jsonify({'Status':'Success',
-				        'Review': review_list}), 200
+				        'Review':review_list}), 200

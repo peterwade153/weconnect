@@ -143,6 +143,7 @@ class WeconnectTestCase(unittest.TestCase):
 
 	def test_editing_business_with_invalid_data(self):
 		""" tests a user can't edit a registered business with invalid data """
+		
 		self.register_user()
 		result = self.login_user()
 		token = json.loads(result.data.decode())['Token']

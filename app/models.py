@@ -9,7 +9,7 @@ db = SQLAlchemy()
 class User(db.Model):
 	""" user table """
 
-	__tablename__='users'
+	__tablename__= 'users'
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(100))
 	email = db.Column(db.String(100), unique=True)
@@ -29,7 +29,7 @@ class User(db.Model):
 class Business(db.Model):
 	"""Business table """
 
-	__tablename__='businesses'
+	__tablename__= 'businesses'
 	id = db.Column(db.Integer, primary_key=True)
 	business_name = db.Column(db.String(50), unique=True)
 	category = db.Column(db.String(50))
@@ -59,7 +59,7 @@ class Business(db.Model):
 		return businesses
 
 	def get_business(id):
-		""" return business by id """
+		""" return bussiness by id """
 		business = Business.query.filter_by(id=id, is_deleted=False).first()
 		return business
 
@@ -71,13 +71,13 @@ class Business(db.Model):
 		      'category':self.category,
 		      'location':self.location,
 		      'created_on':self.created_on,
-		      'modified_on':self.modified_on,
+		      'modified_on':self.modified_on
 		}
 
 class Review(db.Model):
 	"""business reviews table"""
 
-	__tablename__='reviews'
+	__tablename__= 'reviews'
 	id = db.Column(db.Integer, primary_key=True)
 	review = db.Column(db.String(200))
 	business_id = db.Column(db.Integer, db.ForeignKey('businesses.id'))
@@ -100,7 +100,7 @@ class Review(db.Model):
 class ExpiredToken(db.Model):
 	""" model for blacklisted tokens"""
 
-	__tablename__='expired_tokens'
+	__tablename__= 'expired_tokens'
 	id = db.Column(db.Integer, primary_key=True)
 	token = db.Column(db.String(200), unique=True, nullable=False)
 	expired_on = db.Column(db.DateTime)
@@ -108,5 +108,4 @@ class ExpiredToken(db.Model):
 	def __init__(self, token):
 		self.token = token
 		self.expired_on = datetime.datetime.now()
-
-
+		
