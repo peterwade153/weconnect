@@ -176,42 +176,26 @@ def businesses(current_user):
 			return jsonify(response), 200
 
 		elif name is not None:
-			search_results = Business.query.filter(
+			businesses = Business.query.filter(
 				             Business.business_name.ilike('%'+name+'%'), 
 				                                   Business.is_deleted==False)
-			if search_results is not None:
-				business_info = [business.business_object() 
-				                       for business in search_results]
-				return jsonify({'Status':'Success',
-			                'Business':business_info}), 200
 
 		elif location is not None:
-			search_results = Business.query.filter(
+			businesses = Business.query.filter(
 				             Business.location.ilike('%'+location+'%'),
 				                                 Business.is_deleted==False)
-			if search_results is not None:
-				business_info = [business.business_object() 
-				                       for business in search_results]
-				return jsonify({'Status':'Success',
-			                'Business':business_info}), 200
-
+			
 		elif category is not None:
-			search_results = Business.query.filter(
+			businesses = Business.query.filter(
 				             Business.category.ilike('%'+category+'%'),
 				                                  Business.is_deleted==False)
-			if search_results is not None:
-				business_info = [business.business_object() 
-				                       for business in search_results]
-				return jsonify({'Status':'Success',
-			                'Business':business_info}), 200			
 
-		else:
-			businesses = Business.get_businesses()
-
-			business_list = [business.business_object() 
+		#GET without params
+		businesses = Business.get_businesses()
+		business_list = [business.business_object() 
 				                     for business in businesses]
 
-			return jsonify({'Status':'Success',
+		return jsonify({'Status':'Success',
 				            'Businesses':business_list}), 200
 
 
