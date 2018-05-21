@@ -2,7 +2,7 @@ import os
 import re
 import jwt
 from functools import wraps
-from flask import jsonify, request
+from flask import jsonify, request, render_template
 from werkzeug.security import generate_password_hash
 from app import app
 from app.auth.views import auth
@@ -16,6 +16,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 #connecting sqlalchemy object to the app
 db.init_app(app) 
+
+
+@app.route('/')
+def display_documentation():
+	""" route displays api documentation """
+
+	return render_template('index.html')
 
 
 def token_required(f):
