@@ -154,18 +154,8 @@ def businesses(current_user):
 		location = request.args.get('location', None)
 		category = request.args.get('category', None)
 
-		if name is not None:
-			search_results = Business.query.filter(
-				             Business.business_name.ilike('%'+name+'%'), 
-				                                   Business.is_deleted==False)
-			if search_results is not None:
-				business_info = [business.business_object() 
-				                       for business in search_results]
-				return jsonify({'Status':'Success',
-			                'Business':business_info}), 200
 
-
-		elif limit is not None:
+		if limit is not None:
 			business_results = Business.query.paginate(page, limit, False)
 			response = {
 			     'Businesses':[i.business_object() 
@@ -178,7 +168,17 @@ def businesses(current_user):
 
 			return jsonify(response), 200
 
-		elif location:
+		elif name is not None:
+			search_results = Business.query.filter(
+				             Business.business_name.ilike('%'+name+'%'), 
+				                                   Business.is_deleted==False)
+			if search_results is not None:
+				business_info = [business.business_object() 
+				                       for business in search_results]
+				return jsonify({'Status':'Success',
+			                'Business':business_info}), 200
+
+		elif location is not None:
 			search_results = Business.query.filter(
 				             Business.location.ilike('%'+location+'%'),
 				                                 Business.is_deleted==False)
@@ -238,23 +238,23 @@ def business(current_user, id):
 				            'Message':'No business found'}), 404
 
 		if 'business_name' in data.keys():
-			isvalid_name = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+			is_valid_name = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
 					                                  data['business_name'])
-			if not isvalid_name:
+			if not is_valid_name:
 				return jsonify({'Status':'Failed',
 		                   'Message':'characters or digits expected!'}), 403
 			business.business_name = data['business_name']
 		if 'category' in data.keys():
-			isvalid_category = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+			is_valid_category = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
 					                                        data['category'])
-			if not isvalid_category:
+			if not is_valid_category:
 				return jsonify({'Status':'Failed',
 		                    'Message':'characters or digits expected!'}), 403
 			business.category = data['category']
 		if 'location' in data.keys():
-			isvalid_location = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
+			is_valid_location = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$', 
 					                                         data['location'])
-			if not isvalid_location:
+			if not is_valid_location:
 				return jsonify({'Status':'Failed',
 		                     'Message':'characters or digits expected!'}), 403
 			business.location = data['location']
