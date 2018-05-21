@@ -2,6 +2,7 @@
 __pycache__/
 .pytest_cache/
 app/.vscode/
+migrations
 
 *.py[cod]
 *$py.class
