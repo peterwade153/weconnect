@@ -5,6 +5,7 @@ app/.vscode/
 migrations
 .vscode/
 
+
 *.py[cod]
 *$py.class
 
