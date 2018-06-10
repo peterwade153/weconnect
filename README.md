@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/peterwade153/weconnect.svg?branch=challenge2)](https://travis-ci.org/peterwade153/weconnect)
 [![Coverage Status](https://coveralls.io/repos/github/peterwade153/weconnect/badge.svg?branch=master)](https://coveralls.io/github/peterwade153/weconnect?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3b5e5f2b6d5c0ed06307/maintainability)](https://codeclimate.com/github/peterwade153/weconnect/maintainability)
 # WeConnect-API
 ---
 ## Description
