@@ -250,8 +250,8 @@ def business(current_user, id):
 					                                         data['location'])
 			if not is_valid_location:
 				return jsonify({'Status':'Failed',
-		                     'Message':'characters or digits expected!'}), 403
- 			business.location = data['location']
+		                        'Message':'characters or digits expected!'}), 403
+			business.location = data['location']
 
 		if business.user_id != current_user:
 			return jsonify({'Status':'Failed',
