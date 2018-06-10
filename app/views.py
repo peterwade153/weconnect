@@ -4,6 +4,7 @@ import jwt
 from functools import wraps
 from flask import jsonify, request, render_template
 from werkzeug.security import generate_password_hash
+from flask_cors import CORS
 from app import app
 from app.auth.views import auth
 from app.models import db, User, Business, Review, ExpiredToken
@@ -16,6 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 #connecting sqlalchemy object to the app
 db.init_app(app) 
+#enables CORS
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 
 @app.route('/')
@@ -248,7 +251,7 @@ def business(current_user, id):
 			if not is_valid_location:
 				return jsonify({'Status':'Failed',
 		                     'Message':'characters or digits expected!'}), 403
-			business.location = data['location']
+ 			business.location = data['location']
 
 		if business.user_id != current_user:
 			return jsonify({'Status':'Failed',

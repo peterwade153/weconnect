@@ -1,4 +1,4 @@
-""" authentication blueprint """
+""" authentication blueprint """ 
 
 import os
 import re
@@ -6,11 +6,13 @@ import jwt
 import datetime
 from werkzeug.security import  check_password_hash, generate_password_hash
 from flask import Blueprint, jsonify, request
+from flask_cors import CORS
 from app import app
 from app.models import db, User
 
 
 auth = Blueprint('auth', __name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
