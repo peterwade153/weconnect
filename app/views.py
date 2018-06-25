@@ -96,7 +96,7 @@ def reset_password(current_user):
 		                                                      data['email'])
 	is_valid_new_password = re.match('^[A-Za-z0-9]{4,}$', data['new_password'])
 
-	if not is_valid_email and not is_valid_new_password:
+	if not (is_valid_email and is_valid_new_password):
 		return jsonify({
 		'Message':'Invalid Email or Password should atleast be 4 characters!',
 		'Status':False}), 403
@@ -134,7 +134,7 @@ def businesses(current_user):
 		is_valid_location = re.match('^[A-Za-z]+[A-Za-z0-9 ]+$',
 		                                      data['location'])
 
-		if not is_valid_name and not is_valid_category and not is_valid_location:
+		if not (is_valid_name and is_valid_category and is_valid_location):
 			return jsonify({'Message':'Only characters and digits are expected!',
 			                'Status':'Failed'}), 403
 		

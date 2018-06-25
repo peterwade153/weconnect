@@ -31,8 +31,8 @@ def register_user():
 	is_valid_password = re.match('^[A-Za-z0-9]{4,}$', data['password'])
 
 	#check if data passes the validity check
-	if not (is_valid_password and is_valid_email):
-		return jsonify({'Message':'All fields required, valid email and'+ 
+	if not (is_valid_password and is_valid_email and is_valid_name) :
+		return jsonify({'Message':'All fields required, valid email and '+ 
 		'Password should atleast be 4 characters!',
 		                'Status':'Failed'}), 403
 
