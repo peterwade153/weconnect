@@ -71,7 +71,8 @@ class Business(db.Model):
 		      'category':self.category,
 		      'location':self.location,
 		      'created_on':self.created_on,
-		      'modified_on':self.modified_on
+		      'modified_on':self.modified_on,
+			  'owner':self.user_id
 		}
 
 class Review(db.Model):

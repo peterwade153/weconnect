@@ -137,9 +137,9 @@ def businesses(current_user):
 		if not is_valid_name and not is_valid_category and not is_valid_location:
 			return jsonify({'Message':'Only characters and digits are expected!',
 			                'Status':'Failed'}), 403
-
-		business = Business.query.filter_by(business_name=
-				                               data['business_name']).first()
+		
+		biz_name = data['business_name'].lower()
+		business = Business.query.filter_by(business_name=biz_name).first()
 
 		if business is not None:
 			return jsonify({'Message':'Business registered already',
