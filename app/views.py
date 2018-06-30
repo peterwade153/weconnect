@@ -152,11 +152,11 @@ def businesses(current_user):
 		db.session.add(new_business)
 		db.session.commit()
 		return jsonify({
-		   'Message':data['business_name'].upper()+'Registered Successfully',
+		   'Message':data['business_name'].upper()+' Registered Successfully',
 	       'Status':'Success'}), 201
 
 
-	elif request.method == 'GET':
+	else :
 
 		name = request.args.get('q', None)
 		limit = request.args.get('limit', None, type = int)
@@ -180,18 +180,27 @@ def businesses(current_user):
 
 		elif name is not None:
 			businesses = Business.query.filter(
-				             Business.business_name.ilike('%'+name+'%'), 
-				                                   Business.is_deleted==False)
+				             Business.business_name.ilike('%'+name+'%'))
+			business_list = [business.business_object() 
+				                     for business in businesses]
+			return jsonify({'Status':'Success',
+				            'Businesses':business_list}), 200
 
 		elif location is not None:
 			businesses = Business.query.filter(
-				             Business.location.ilike('%'+location+'%'),
-				                                 Business.is_deleted==False)
+				             Business.location.ilike('%'+location+'%'))
+			business_list = [business.business_object() 
+				                     for business in businesses]
+			return jsonify({'Status':'Success',
+				            'Businesses':business_list}), 200
 			
 		elif category is not None:
 			businesses = Business.query.filter(
-				             Business.category.ilike('%'+category+'%'),
-				                                  Business.is_deleted==False)
+				             Business.category.ilike('%'+category+'%'))
+			business_list = [business.business_object() 
+				                     for business in businesses]
+			return jsonify({'Status':'Success',
+				            'Businesses':business_list}), 200
 
 		#GET without params
 		businesses = Business.get_businesses()
@@ -275,7 +284,7 @@ def business(current_user, id):
 		if business.user_id != current_user:
 			return jsonify({'Status':'Failed',
 				            'Message':'You are not permitted'}), 403
-		business.is_deleted = True
+		db.session.delete(business)
 		db.session.commit()
 
 		return jsonify({'Status':'Success',

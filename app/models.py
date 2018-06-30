@@ -40,7 +40,7 @@ class Business(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 	user = db.relationship('User', backref=db.backref('businesses', 
 		                                              lazy='dynamic'))
-	is_deleted = db.Column(db.Boolean, default=False)
+
 
 	def __init__(self, business_name, category, location, user_id):
 		self.business_name = business_name
@@ -55,12 +55,12 @@ class Business(db.Model):
 
 	def get_businesses():
 		""" returns businesses """
-		businesses = Business.query.filter_by(is_deleted=False).all()
+		businesses = Business.query.all()
 		return businesses
 
 	def get_business(id):
 		""" return bussiness by id """
-		business = Business.query.filter_by(id=id, is_deleted=False).first()
+		business = Business.query.filter_by(id=id).first()
 		return business
 
 	def business_object(self):
