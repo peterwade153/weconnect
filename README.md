@@ -84,7 +84,7 @@ $ python run.py
 
 To test the api using postman(chrome extension) with the url below
 
- https://weconnect-my.herokuapp.com/
+https://weconect-api.herokuapp.com/
 
 To view the api documentation use the link below
 
