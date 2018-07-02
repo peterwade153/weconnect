@@ -173,7 +173,8 @@ def businesses(current_user):
 			     'pages':business_results.pages,
 			     'next':business_results.next_num,
 			     'current':business_results.page,
-			     'prev':business_results.prev_num
+			     'prev':business_results.prev_num,
+				 'count':len(business_results.items)
 			}
 
 			return jsonify(response), 200
